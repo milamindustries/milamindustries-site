@@ -225,7 +225,17 @@ export default function Page() {
                 <p><b>HQ Office:</b> {data.contact.office}</p>
               </div>
               <div className="mt-6">
-                <iframe title="map" className="w-full h-48 rounded-xl border" src="https://www.openstreetmap.org/export/embed.html?bbox=-112.2%2C33.2%2C-111.9%2C33.6&layer=mapnik" />
+                <iframe
+  title="Milam Industries HQ"
+  width="100%"
+  height="220"
+  style={{ border: 0, borderRadius: '0.75rem' }}
+  loading="lazy"
+  allowFullScreen
+  referrerPolicy="no-referrer-when-downgrade"
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
+/>
+
               </div>
             </div>
           </div>
