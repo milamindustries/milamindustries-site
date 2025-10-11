@@ -1,3 +1,4 @@
+import './(styles)/globals.css'
 export const metadata = {
   title: 'Milam Industries LLC',
   description: 'Real estate solutions | Nationwide coverage',
