@@ -11,11 +11,13 @@ const defaultData = {
     primary: "#111827",
     accent: "#22c55e",
   },
-// BEFORE
-{ label: "Services", href: "#services" },
-
-// AFTER
-{ label: "Services", href: "/services" },
+nav: [
+  { label: "Home", href: "#home" },
+  { label: "Services", href: "#services" },
+  { label: "How It Works", href: "#process" },
+  { label: "About", href: "#about" },
+  { label: "Contact", href: "#contact" },
+],
 
   hero: {
     title: "Sell your house fast, the hassle-free way.",
