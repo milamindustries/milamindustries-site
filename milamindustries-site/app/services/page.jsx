@@ -25,6 +25,18 @@ const services = [
     blurb:
       "Subject-to, seller-financing, novations, and more—tailored structures for unique situations.",
   },
+  {
+    title: "Tenant Relocation Help",
+    blurb: "We coordinate cash-for-keys and smooth transitions to minimize downtime and disputes.",
+  },
+  {
+    title: "Light Repairs & Turnover",
+    blurb: "Quick, cost-effective refreshes to prepare properties for listing or rental.",
+  },
+  {
+    title: "Probate & Inherited Properties",
+    blurb: "We handle the details when you inherit a property—fast, stress-free sales with no repairs needed.",
+  },
 ];
 
 export default function ServicesPage() {
