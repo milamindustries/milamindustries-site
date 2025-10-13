@@ -113,6 +113,97 @@ export default function Page() {
           ))}
         </div>
 
+      {/* SITUATIONS WE HELP WITH */}
+        <div className="mt-16">
+          <h3 className="text-2xl md:text-3xl font-bold text-center">
+            We buy houses in any situation
+          </h3>
+          <p className="mt-3 text-center text-gray-600 max-w-4xl mx-auto">
+            There’s no issue we haven’t seen. Whether you’re facing repairs, life changes, or
+            financial pressure, we buy houses nationwide — as-is, for cash, and on your schedule.
+          </p>
+
+          <div className="mt-10 grid md:grid-cols-2 gap-8">
+            {/* LEFT COLUMN */}
+            <ul className="space-y-6 text-gray-800">
+              <li className="flex gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-1 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.42 0l-3.2-3.2a1 1 0 111.42-1.42l2.49 2.49 6.49-6.49a1 1 0 011.42 0z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <p className="font-semibold">Too many repairs to deal with</p>
+                  <p className="text-sm text-gray-600">
+                    Got a big renovation quote or don’t want the hassle? Sell as-is. We handle the clean-out and repairs.
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-1 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.42 0l-3.2-3.2a1 1 0 111.42-1.42l2.49 2.49 6.49-6.49a1 1 0 011.42 0z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <p className="font-semibold">Inherited a property</p>
+                  <p className="text-sm text-gray-600">
+                    Inherited a house and need to sell quickly? We can help simplify probate sales and buy as-is.
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-1 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.42 0l-3.2-3.2a1 1 0 111.42-1.42l2.49 2.49 6.49-6.49a1 1 0 011.42 0z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <p className="font-semibold">Going through divorce</p>
+                  <p className="text-sm text-gray-600">
+                    Need a fast sale to move on? We make clear, fair offers with flexible closing options.
+                  </p>
+                </div>
+              </li>
+            </ul>
+
+            {/* RIGHT COLUMN */}
+            <ul className="space-y-6 text-gray-800">
+              <li className="flex gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-1 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.42 0l-3.2-3.2a1 1 0 111.42-1.42l2.49 2.49 6.49-6.49a1 1 0 011.42 0z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <p className="font-semibold">Stop foreclosure</p>
+                  <p className="text-sm text-gray-600">
+                    Behind on payments? We can make an immediate cash offer to help you avoid losing your property.
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-1 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.42 0l-3.2-3.2a1 1 0 111.42-1.42l2.49 2.49 6.49-6.49a1 1 0 011.42 0z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <p className="font-semibold">Moving out of state</p>
+                  <p className="text-sm text-gray-600">
+                    Relocating? Close on your schedule and skip listings, agents, and showings.
+                  </p>
+                </div>
+              </li>
+
+              <li className="flex gap-3">
+                <svg className="h-5 w-5 text-green-600 mt-1 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.2 7.2a1 1 0 01-1.42 0l-3.2-3.2a1 1 0 111.42-1.42l2.49 2.49 6.49-6.49a1 1 0 011.42 0z" clipRule="evenodd"/>
+                </svg>
+                <div>
+                  <p className="font-semibold">Tired of dealing with tenants</p>
+                  <p className="text-sm text-gray-600">
+                    Landlords, sell problem rentals without fixing, cleaning, or evicting. We’ll buy it directly.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
         {/* COMPARISON SECTION */}
         <div className="mt-20 bg-gray-100 p-8 rounded-2xl border">
           <h3 className="text-2xl md:text-3xl font-bold text-center mb-6">What Are The Benefits Of Selling My House For Cash?</h3>
