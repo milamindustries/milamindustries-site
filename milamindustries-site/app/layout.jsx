@@ -28,25 +28,24 @@ export default function RootLayout({ children }) {
         {/* Page content */}
         <main className="mx-auto max-w-6xl px-6 pt-8 pb-6">{children}</main>
 
-        {/* Simple footer (optional) */}
-        <footer className="border-t bg-white">
-  <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
+       <footer className="bg-gray-900 text-gray-300">
+  <div className="max-w-6xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-6">
     <div>
-      <div className="font-semibold text-gray-900">Milam Industries LLC</div>
-      <p className="text-sm text-gray-600 mt-2">
+      <div className="font-semibold text-white">Milam Industries LLC</div>
+      <p className="text-sm mt-2 max-w-md">
         Real estate solutions | Nationwide coverage
       </p>
     </div>
     <div className="text-sm md:text-right space-y-1">
-      <a href="/" className="block hover:text-gray-900">Home</a>
-      <a href="/services" className="block hover:text-gray-900">Services</a>
-      <a href="/how-it-works" className="block hover:text-gray-900">How it works</a>
-      <a href="/about" className="block hover:text-gray-900">About</a>
-      <a href="/#contact" className="block hover:text-gray-900">Contact</a>
+      <a href="/" className="block hover:text-white">Home</a>
+      <a href="/services" className="block hover:text-white">Services</a>
+      <a href="/how-it-works" className="block hover:text-white">How It Works</a>
+      <a href="/about" className="block hover:text-white">About</a>
+      <a href="/#contact" className="block hover:text-white">Contact</a>
     </div>
   </div>
-  <div className="border-t border-gray-200">
-    <div className="max-w-6xl mx-auto px-6 py-4 text-xs text-gray-500">
+  <div className="border-t border-white/10">
+    <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-gray-400">
       © {new Date().getFullYear()} Milam Industries LLC. All rights reserved.
     </div>
   </div>
