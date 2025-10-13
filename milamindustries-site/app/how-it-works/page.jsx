@@ -1,140 +1,162 @@
 // app/how-it-works/page.jsx
 export const metadata = {
   title: 'How It Works | Milam Industries LLC',
-  description:
-    'Selling your Atlanta home can be a quick & easy process. Learn how our all-cash, no-fee approach works and get answers to common questions.',
+  description: 'See exactly how our simple 3-step process works—then read answers to the most common questions homeowners ask.',
 };
+
+function StepCard({ step, title, blurb }) {
+  return (
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <p className="text-sm text-gray-500">Step {step}</p>
+      <h3 className="mt-2 text-xl font-semibold text-gray-900">{title}</h3>
+      <p className="mt-3 text-gray-700 leading-relaxed">{blurb}</p>
+    </div>
+  );
+}
 
 export default function HowItWorksPage() {
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12 space-y-12">
-      {/* Hero / Intro */}
-      <section className="space-y-6">
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-          Selling Your Atlanta Home Can Be A Quick & Easy Process
+    <main className="mx-auto max-w-6xl px-6 py-12">
+      {/* 3-Step summary (now at the very top) */}
+      <section aria-labelledby="how-it-works-top">
+        <h1 id="how-it-works-top" className="text-4xl font-extrabold tracking-tight text-gray-900">
+          How it works
         </h1>
 
-        <p className="text-lg md:text-xl">
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <StepCard
+            step={1}
+            title="Call or submit"
+            blurb="Tell us about the property—address, condition, and timeline."
+          />
+          <StepCard
+            step={2}
+            title="Offer"
+            blurb="Get a no-obligation cash offer. Transparent numbers, no pressure."
+          />
+          <StepCard
+            step={3}
+            title="Close"
+            blurb="Choose your date. We coordinate title & paperwork."
+          />
+        </div>
+
+        <hr className="mt-12 border-gray-200" />
+      </section>
+
+      {/* Long-form explainer pulled from your screenshots */}
+      <section className="mt-12 space-y-8">
+        <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+          Selling Your Atlanta Home Can Be A Quick & Easy Process
+        </h2>
+        <p className="text-gray-700 leading-relaxed">
           Milam Industries LLC buys houses in and around Atlanta (and other areas, too!).
           <strong> We&apos;re not listing your house</strong>, we’re actually the ones buying your home.
-          Because <strong>we pay cash</strong> and are buying your Atlanta home directly from you,
-          we’re able to close quickly (or on your schedule).
+          Because <strong>we pay cash</strong> and are buying directly from you, we’re able to close quickly
+          (or on your schedule).
+        </p>
+        <p className="text-gray-700 leading-relaxed">
+          When you work with us there are no fees and no commissions like there are when you list with a
+          traditional agent. You never have to worry about extra costs to sell—coming out of pocket or
+          getting your house “market-ready.” We want to buy your house as-is, in any condition or location.
         </p>
 
-        <p className="text-lg md:text-xl">
-          When you work with us there are no fees and no commissions like there are when you list
-          your house with a traditional agent. You never have to worry about any extra costs to
-          sell your house fast coming out of your pocket or even getting your house “market-ready”
-          to sell. We want to buy your house as-is.
-        </p>
-
-        <p className="text-lg md:text-xl">
-          No matter how ugly or pretty it is and no matter the location, we buy houses in Atlanta in
-          <em> any</em> condition.
-        </p>
-      </section>
-
-      {/* From offer to close */}
-      <section className="space-y-6">
-        <h2 className="text-3xl md:text-4xl font-bold">
+        <h3 className="mt-10 text-3xl font-extrabold tracking-tight text-gray-900">
           From offer to close and cash in your hand in as little as 7 days.
-        </h2>
-        <p className="text-lg md:text-xl">
-          You can get rid of the headache of that property fast and{' '}
-          <strong>avoid paying one more utility payment</strong>, tax payment, insurance payment,
-          <strong> mortgage</strong> payment, or any of the other costs associated with a home.
-          If you list your house and wait 90+ days to close, you have to figure in all of the costs
-          of holding that property during the time you have it listed and are waiting for the property to close.
+        </h3>
+        <p className="text-gray-700 leading-relaxed">
+          Avoid paying another <strong>utility</strong>, <strong>tax</strong>, <strong>insurance</strong>,
+          or <strong>mortgage</strong> payment while you wait. We can make a fair, no-obligation all-cash
+          offer in as little as 24 hours, and once you accept, we can close in as little as 7 days—often at a
+          local, reputable title company.
         </p>
-      </section>
 
-      {/* Don’t worry about fixing */}
-      <section className="space-y-6">
-        <h2 className="text-3xl md:text-4xl font-bold">
+        <h3 className="mt-10 text-3xl font-extrabold tracking-tight text-gray-900">
           Don’t worry about fixing anything
-        </h2>
-        <p className="text-lg md:text-xl">
-          We don’t care how dirty your house is (<em>we’ve seen worse!</em>) or how many repairs are needed.
+        </h3>
+        <p className="text-gray-700 leading-relaxed">
+          We don’t care how dirty your house is or how many repairs are needed.
           <em> Is it a complete fixer? Great! We love projects.</em>{' '}
-          <strong>We want to make an offer on your house today.</strong>{' '}
-          Let us save you time and put more money in your pocket.
+          <span className="text-red-600 font-semibold">We want to make an offer on your house today.</span>
         </p>
-      </section>
 
-      {/* Quick links to Q&A */}
-      <section className="space-y-4">
-        <h2 className="text-3xl md:text-4xl font-bold">I have some questions…</h2>
-        <ul className="list-disc pl-6 space-y-2 text-red-500 font-semibold">
-          <li><a href="#as-is">What does “as-is” mean?</a></li>
-          <li><a href="#all-cash">What does an “all-cash offer” mean?</a></li>
-          <li><a href="#fast-closing">How fast is a fast closing?</a></li>
-          <li><a href="#no-fast">What if I don’t need a fast closing?</a></li>
-          <li><a href="#lowball">Will I get a lowball offer?</a></li>
-          <li><a href="#legit">Is this even legit?</a></li>
-        </ul>
-      </section>
+        {/* Questions index */}
+        <div className="mt-12 rounded-2xl bg-gray-50 p-6">
+          <h4 className="text-2xl font-bold text-gray-900">I have some questions…</h4>
+          <ul className="mt-4 list-disc space-y-2 pl-6 text-red-600">
+            <li>What does “as-is” mean?</li>
+            <li>What does an “all-cash offer” mean?</li>
+            <li>How fast is a fast closing?</li>
+            <li>What if I don’t need a fast closing?</li>
+            <li>Will I get a lowball offer?</li>
+            <li>Is this even legit?</li>
+          </ul>
+        </div>
 
-      {/* Q&A Sections */}
-      <section id="as-is" className="space-y-4 scroll-mt-24">
-        <h3 className="text-3xl font-bold">What does “as-is” mean?</h3>
-        <p className="text-lg md:text-xl">
-          We buy your Atlanta home as-is, meaning you don’t have to worry about doing repairs,
-          fixing your home up, or getting it ready for showings. We’ll handle all repairs,
-          inspections, and more after we purchase your home. We factor this into our offer, of course,
-          but it saves you the money and the headache associated with getting your home ready to sell.
-        </p>
-      </section>
+        {/* Answers */}
+        <div className="space-y-10">
+          <div>
+            <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              What does “as-is” mean?
+            </h5>
+            <p className="mt-3 text-gray-700 leading-relaxed">
+              We buy your home as-is—no repairs, showings, or cleaning required. We’ll handle inspections and
+              any work <em>after</em> we purchase your home. It saves you time, money, and hassle.
+            </p>
+          </div>
 
-      <section id="all-cash" className="space-y-4 scroll-mt-24">
-        <h3 className="text-3xl font-bold">What does an “all-cash offer” mean?</h3>
-        <p className="text-lg md:text-xl">
-          “All-cash” means exactly that — all cash for your Atlanta home! Because we are real estate
-          investors who are purchasing your home directly, we don’t rely on traditional financing
-          like retail homebuyers. When you sell to us, there’s no risk of the financing falling
-          through, or closing being delayed. When we make you an offer, that’s the full amount
-          you’ll receive at closing.
-        </p>
-      </section>
+          <div>
+            <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              What does an “all-cash offer” mean?
+            </h5>
+            <p className="mt-3 text-gray-700 leading-relaxed">
+              “All-cash” means we purchase directly without relying on bank financing. That removes the risk
+              of loans falling through or delays. The amount we offer is the amount you’ll receive at closing.
+            </p>
+          </div>
 
-      <section id="fast-closing" className="space-y-4 scroll-mt-24">
-        <h3 className="text-3xl font-bold">How fast is a fast closing?</h3>
-        <p className="text-lg md:text-xl">
-          After you send us information about your home, we can make you a no-obligation, fair
-          all-cash offer in as little as 24 hours. Once you accept, we close at a local, reputable
-          title company in as little as 7 days. Compare that to the 30+ days it can take to close
-          when listing your house the traditional way, and the benefits are obvious!
-        </p>
-      </section>
+          <div>
+            <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              How fast is a fast closing?
+            </h5>
+            <p className="mt-3 text-gray-700 leading-relaxed">
+              After you share details about your home, we can make a fair, no-obligation cash offer in as
+              little as 24 hours. If you accept, we can close in as little as 7 days with a local title
+              company—far faster than the traditional 30+ day timeline.
+            </p>
+          </div>
 
-      <section id="no-fast" className="space-y-4 scroll-mt-24">
-        <h3 className="text-3xl font-bold">What if I don’t need a fast closing?</h3>
-        <p className="text-lg md:text-xl">
-          At Milam Industries LLC, we work on your time frame. If you don’t need a fast closing due
-          to the need to make arrangements, explore your future options, etc., we will schedule the
-          closing on the day that works best for you!
-        </p>
-      </section>
+          <div>
+            <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              What if I don’t need a fast closing?
+            </h5>
+            <p className="mt-3 text-gray-700 leading-relaxed">
+              We work on <strong>your</strong> timeframe. If you need time to arrange plans, we’ll schedule
+              closing on the date that works best for you.
+            </p>
+          </div>
 
-      <section id="lowball" className="space-y-4 scroll-mt-24">
-        <h3 className="text-3xl font-bold">Will I get a lowball offer?</h3>
-        <p className="text-lg md:text-xl">
-          Our goal is to provide you with the fairest offer possible. Unlike other buyers or big tech
-          giants, we’re transparent with how we arrive at an offer amount. What we offer is based on
-          what the value of the property may be once we make the necessary improvements and upgrades.
-          We’re entirely transparent with this offer process and happy to walk you through how it works.
-        </p>
-      </section>
+          <div>
+            <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              Will I get a lowball offer?
+            </h5>
+            <p className="mt-3 text-gray-700 leading-relaxed">
+              Our goal is to give you the fairest offer possible. We’re transparent about how we arrive at
+              numbers and happy to walk you through it. No games or gotchas.
+            </p>
+          </div>
 
-      <section id="legit" className="space-y-4 scroll-mt-24">
-        <h3 className="text-3xl font-bold">Is this even legit?</h3>
-        <p className="text-lg md:text-xl">
-          Yes, it is! The real estate industry is rapidly changing, and thousands of homeowners are
-          exploring their options when it comes to selling their house in the fastest, easiest, and
-          most transparent way. That’s where we come in. We offer an alternative for those homeowners
-          who may not have the time or ability to list their house on the market for top dollar.
-          We’ll work with you to assess your situation, make you a transparent all-cash offer, and
-          close on your timeline.
-        </p>
+          <div>
+            <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
+              Is this even legit?
+            </h5>
+            <p className="mt-3 text-gray-700 leading-relaxed">
+              Yes. The industry is changing fast, and many sellers want a faster, simpler, more transparent
+              option. That’s where we come in—assess your situation, make a clear all-cash offer, and close on
+              your timeline.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
   );
