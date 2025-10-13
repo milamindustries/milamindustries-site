@@ -71,26 +71,6 @@ export default function Page() {
   return (
     <div className="min-h-screen" style={{ '--accent': data.theme.accent }}>
       {/* NAV */}
-      <header className="sticky top-0 z-40 backdrop-blur bg-white/80 border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={data.brand.logoUrl} alt="logo" className="h-10 w-auto rounded" />
-            <div>
-              <div className="font-semibold text-lg">{data.brand.name}</div>
-              <div className="text-xs text-gray-500">{data.brand.tagline}</div>
-            </div>
-          </div>
-          <nav className="hidden md:flex gap-6 text-sm">
-            {data.nav.map(n => (
-              <a key={n.label} href={n.href} className="hover:text-gray-900 text-gray-600">{n.label}</a>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <a href="#contact" className="px-4 py-2 rounded-xl border border-gray-300 text-sm">Get offer</a>
-            <button onClick={()=>setEdit(e=>!e)} className="px-3 py-2 rounded-xl text-sm bg-gray-900 text-white">{edit ? 'Done' : 'Edit'}</button>
-          </div>
-        </div>
-      </header>
 
       {/* HERO */}
       <section id="home" className="relative overflow-hidden">
@@ -227,25 +207,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-gray-900 text-gray-300">
-        <div className="max-w-6xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-6">
-          <div>
-            <div className="font-semibold text-white">{data.brand.name}</div>
-            <p className="text-sm mt-2 max-w-md">{data.brand.tagline}</p>
-          </div>
-          <div className="text-sm md:text-right space-y-1">
-            <a href="#home" className="block hover:text-white">Home</a>
-            <a href="#services" className="block hover:text-white">Services</a>
-            <a href="#process" className="block hover:text-white">How it works</a>
-            <a href="#about" className="block hover:text-white">About</a>
-            <a href="#contact" className="block hover:text-white">Contact</a>
-          </div>
-        </div>
-        <div className="border-t border-white/10">
-          <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-gray-400">{data.footer.legal}</div>
-        </div>
-      </footer>
     </div>
   )
 }
