@@ -164,22 +164,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* PROCESS */}
-      <section id="process" className="bg-white/60 border-y">
-        <div className="max-w-6xl mx-auto px-4 py-16">
-          <h2 className="text-2xl md:text-3xl font-bold">How it works</h2>
-          <ol className="mt-8 grid md:grid-cols-3 gap-4">
-            {data.process.map((p) => (
-              <li key={p.step} className="rounded-2xl p-6 bg-white border">
-                <div className="text-sm text-gray-500">Step {p.step}</div>
-                <div className="font-semibold mt-1">{p.title}</div>
-                <p className="text-gray-600 text-sm mt-2">{p.desc}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
       {/* ABOUT */}
       <section id="about" className="max-w-6xl mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-8 items-start">
