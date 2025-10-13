@@ -47,19 +47,20 @@ export default function HowItWorksPage() {
       {/* Long-form explainer pulled from your screenshots */}
       <section className="mt-12 space-y-8">
         <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
-          Selling Your Atlanta Home Can Be A Quick & Easy Process
-        </h2>
-        <p className="text-gray-700 leading-relaxed">
-          Milam Industries LLC buys houses in and around Atlanta (and other areas, too!).
-          <strong> We&apos;re not listing your house</strong>, we’re actually the ones buying your home.
-          Because <strong>we pay cash</strong> and are buying directly from you, we’re able to close quickly
-          (or on your schedule).
-        </p>
-        <p className="text-gray-700 leading-relaxed">
-          When you work with us there are no fees and no commissions like there are when you list with a
-          traditional agent. You never have to worry about extra costs to sell—coming out of pocket or
-          getting your house “market-ready.” We want to buy your house as-is, in any condition or location.
-        </p>
+  Selling Your Home Can Be A Quick & Easy Process
+</h2>
+<p className="text-gray-700 leading-relaxed">
+  Milam Industries LLC buys houses across the nation — in any state, city, or condition.
+  <strong> We&apos;re not listing your house</strong>, we’re actually the ones buying it directly.
+  Because <strong>we pay cash</strong> and purchase homes nationwide, we’re able to close quickly
+  and on your timeline—no waiting, no uncertainty.
+</p>
+<p className="text-gray-700 leading-relaxed">
+  When you work with us, there are no fees or commissions like with a traditional real estate agent.
+  You’ll never have to spend money fixing up your home or getting it “market-ready.” We buy houses
+  as-is, anywhere in the U.S., in any situation or condition—making the process simple and stress-free
+  from start to finish.
+</p>
 
         <h3 className="mt-10 text-3xl font-extrabold tracking-tight text-gray-900">
           From offer to close and cash in your hand in as little as 7 days.
