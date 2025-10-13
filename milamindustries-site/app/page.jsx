@@ -144,29 +144,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section id="about" className="max-w-6xl mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-8 items-start">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold">About us</h2>
-            <p className="mt-4 text-gray-700">{data.about.blurb}</p>
-            <ul className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {data.about.highlights.map((h, i) => (
-                <li key={i} className="text-sm bg-white border rounded-xl px-3 py-2">{h}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-gradient-to-br from-white to-gray-50 border rounded-2xl p-6">
-            <h3 className="font-semibold">Why sellers choose us</h3>
-            <ul className="mt-3 text-sm text-gray-700 list-disc list-inside space-y-1">
-              <li>No agent commissions or hidden fees</li>
-              <li>We buy as‑is—even with tenants or liens</li>
-              <li>Fast, clear communication</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
       {/* CONTACT */}
       <section id="contact" className="bg-white border-t">
         <div className="max-w-6xl mx-auto px-4 py-16">
