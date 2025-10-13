@@ -16,11 +16,11 @@ export default function RootLayout({ children }) {
               Milam Industries LLC
             </a>
             <nav className="flex gap-6 text-sm">
-              <a className="hover:opacity-70" href="#home">Home</a>
+              <a className="hover:opacity-70" href="/">Home</a>
               <a className="hover:opacity-70" href="/services">Services</a>
               <a className="hover:opacity-70" href="/how-it-works">How It Works</a>
               <a className="hover:opacity-70" href="/about">About</a>
-              <a className="hover:opacity-70" href="#contact">Contact</a>
+              <a className="hover:opacity-70" href="/#contact">Contact</a>
             </nav>
           </div>
         </header>
@@ -38,11 +38,11 @@ export default function RootLayout({ children }) {
       </p>
     </div>
     <div className="text-sm md:text-right space-y-1">
-      <a href="#home" className="block hover:text-gray-900">Home</a>
+      <a href="/" className="block hover:text-gray-900">Home</a>
       <a href="/services" className="block hover:text-gray-900">Services</a>
-      <a href="/how-it-works" className="block hover:text-gray-900">How It Works</a>
+      <a href="/how-it-works" className="block hover:text-gray-900">How it works</a>
       <a href="/about" className="block hover:text-gray-900">About</a>
-      <a href="#contact" className="block hover:text-gray-900">Contact</a>
+      <a href="/#contact" className="block hover:text-gray-900">Contact</a>
     </div>
   </div>
   <div className="border-t border-gray-200">
