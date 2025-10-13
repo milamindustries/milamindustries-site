@@ -10,17 +10,17 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="bg-gray-50 text-gray-900 antialiased">
         {/* Site-wide header */}
-        <header className="border-b bg-white">
+        <header className="border-b bg-gray-900 text-gray-100">
           <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
             <a href="/" className="text-lg font-semibold tracking-tight hover:opacity-80">
               Milam Industries LLC
             </a>
             <nav className="flex gap-6 text-sm">
-              <a className="hover:opacity-70" href="/">Home</a>
-              <a className="hover:opacity-70" href="/services">Services</a>
-              <a className="hover:opacity-70" href="/how-it-works">How It Works</a>
-              <a className="hover:opacity-70" href="/about">About</a>
-              <a className="hover:opacity-70" href="/#contact">Contact</a>
+              <a className="hover:text-white text-gray-300" href="/">Home</a>
+              <a className="hover:text-white text-gray-300" href="/services">Services</a>
+              <a className="hover:text-white text-gray-300" href="/how-it-works">How It Works</a>
+              <a className="hover:text-white text-gray-300" href="/about">About</a>
+              <a className="hover:text-white text-gray-300" href="/#contact">Contact</a>
             </nav>
           </div>
         </header>
