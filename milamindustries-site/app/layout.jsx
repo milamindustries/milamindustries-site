@@ -26,11 +26,11 @@ export default function RootLayout({ children }) {
         </header>
 
         {/* Page content */}
-        <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
+        <main className="mx-auto max-w-6xl px-6 pt-8 pb-6">{children}</main>
 
         {/* Simple footer (optional) */}
         <footer className="border-t bg-white">
-          <div className="mx-auto max-w-6xl px-6 py-6 text-sm text-gray-600">
+          <div className="mx-auto max-w-6xl px-6 py-4 text-sm text-gray-600">
             © {new Date().getFullYear()} Milam Industries LLC. All rights reserved.
           </div>
         </footer>
