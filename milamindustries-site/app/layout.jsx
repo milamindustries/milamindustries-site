@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
             <nav className="flex gap-6 text-sm">
               <a className="hover:opacity-70" href="/#home">Home</a>
               <a className="hover:opacity-70" href="/services">Services</a>
-              <a className="hover:opacity-70" href="/#process">How It Works</a>
+              <a className="hover:opacity-70" href="/how-it-works">How It Works</a>
               <a className="hover:opacity-70" href="/#about">About</a>
               <a className="hover:opacity-70" href="/#contact">Contact</a>
             </nav>
