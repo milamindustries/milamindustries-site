@@ -1,3 +1,4 @@
+import './(styles)/globals.css';
 // app/layout.jsx
 export const metadata = {
   title: 'Milam Industries LLC',
