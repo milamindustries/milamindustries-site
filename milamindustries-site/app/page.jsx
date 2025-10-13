@@ -102,7 +102,7 @@ export default function Page() {
       )}
 
       {/* SERVICES */}
-      <section id="services" className="max-w-6xl mx-auto px-4 py-16">
+      <section id="services" className="max-w-6xl mx-auto px-4 pt-16 pb-12">
         <h2 className="text-2xl md:text-3xl font-bold">What we offer</h2>
         <div className="mt-8 grid md:grid-cols-3 gap-4">
           {data.services.map((s, i) => (
@@ -236,7 +236,7 @@ export default function Page() {
       </section>
 
 {/* --- A QUICKER WAY TO SELL --- */}
-<section className="max-w-6xl mx-auto px-4 mt-10 py-16">
+<section className="max-w-6xl mx-auto px-4 pt-0 pb-16">
   <h2 className="text-2xl md:text-3xl font-bold text-center">
     A Quicker Way To Sell Your House
   </h2>
