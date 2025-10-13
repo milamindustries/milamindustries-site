@@ -16,11 +16,11 @@ export default function RootLayout({ children }) {
               Milam Industries LLC
             </a>
             <nav className="flex gap-6 text-sm">
-              <a className="hover:opacity-70" href="/#home">Home</a>
+              <a className="hover:opacity-70" href="#home">Home</a>
               <a className="hover:opacity-70" href="/services">Services</a>
               <a className="hover:opacity-70" href="/how-it-works">How It Works</a>
-              <a className="hover:opacity-70" href="/#about">About</a>
-              <a className="hover:opacity-70" href="/#contact">Contact</a>
+              <a className="hover:opacity-70" href="/about">About</a>
+              <a className="hover:opacity-70" href="#contact">Contact</a>
             </nav>
           </div>
         </header>
@@ -30,10 +30,27 @@ export default function RootLayout({ children }) {
 
         {/* Simple footer (optional) */}
         <footer className="border-t bg-white">
-          <div className="mx-auto max-w-6xl px-6 py-4 text-sm text-gray-600">
-            © {new Date().getFullYear()} Milam Industries LLC. All rights reserved.
-          </div>
-        </footer>
+  <div className="max-w-6xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-6">
+    <div>
+      <div className="font-semibold text-gray-900">Milam Industries LLC</div>
+      <p className="text-sm text-gray-600 mt-2">
+        Real estate solutions | Nationwide coverage
+      </p>
+    </div>
+    <div className="text-sm md:text-right space-y-1">
+      <a href="#home" className="block hover:text-gray-900">Home</a>
+      <a href="/services" className="block hover:text-gray-900">Services</a>
+      <a href="/how-it-works" className="block hover:text-gray-900">How It Works</a>
+      <a href="/about" className="block hover:text-gray-900">About</a>
+      <a href="#contact" className="block hover:text-gray-900">Contact</a>
+    </div>
+  </div>
+  <div className="border-t border-gray-200">
+    <div className="max-w-6xl mx-auto px-6 py-4 text-xs text-gray-500">
+      © {new Date().getFullYear()} Milam Industries LLC. All rights reserved.
+    </div>
+  </div>
+</footer>
       </body>
     </html>
   );
