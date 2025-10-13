@@ -100,62 +100,70 @@ export default function HowItWorksPage() {
             <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
               What does “as-is” mean?
             </h5>
-            <p className="mt-3 text-gray-700 leading-relaxed">
-              We buy your home as-is—no repairs, showings, or cleaning required. We’ll handle inspections and
-              any work <em>after</em> we purchase your home. It saves you time, money, and hassle.
-            </p>
+            <p className="text-gray-700 leading-relaxed">
+  We buy homes nationwide <strong>as-is</strong>, meaning you don’t have to worry about
+  doing repairs, cleaning, inspections, showings, or getting your property “market-ready.”
+  We handle any needed repairs and improvements <em>after</em> we purchase your home.
+  We factor this into our offer so you can skip the hassle and keep more time—and peace of mind.
+</p>
           </div>
 
           <div>
             <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
               What does an “all-cash offer” mean?
             </h5>
-            <p className="mt-3 text-gray-700 leading-relaxed">
-              “All-cash” means we purchase directly without relying on bank financing. That removes the risk
-              of loans falling through or delays. The amount we offer is the amount you’ll receive at closing.
-            </p>
+            <p className="text-gray-700 leading-relaxed">
+  “All-cash” means exactly that—no bank financing. We’re real estate buyers purchasing your
+  home directly, so there’s no risk of financing falling through or a delayed closing.
+  When we make you an offer, that’s the amount you’ll receive at closing.
+</p>
           </div>
 
           <div>
             <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
               How fast is a fast closing?
             </h5>
-            <p className="mt-3 text-gray-700 leading-relaxed">
-              After you share details about your home, we can make a fair, no-obligation cash offer in as
-              little as 24 hours. If you accept, we can close in as little as 7 days with a local title
-              company—far faster than the traditional 30+ day timeline.
-            </p>
+            <p className="text-gray-700 leading-relaxed">
+  After you share a few details about your property, we can make a no-obligation, fair
+  all-cash offer in as little as 24 hours. Once you accept, we close with a reputable title
+  company in your area in as little as 7 days. Compare that to the 30+ days a traditional
+  listing can take—and the difference is obvious.
+</p>
           </div>
 
           <div>
             <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
               What if I don’t need a fast closing?
             </h5>
-            <p className="mt-3 text-gray-700 leading-relaxed">
-              We work on <strong>your</strong> timeframe. If you need time to arrange plans, we’ll schedule
-              closing on the date that works best for you.
-            </p>
+            <p className="text-gray-700 leading-relaxed">
+  We work on <strong>your</strong> timeline. If you don’t need a fast closing—maybe you’re
+  arranging your next move or waiting on a specific date—we’ll schedule the closing for
+  the day that works best for you.
+</p>
           </div>
 
           <div>
             <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
               Will I get a lowball offer?
             </h5>
-            <p className="mt-3 text-gray-700 leading-relaxed">
-              Our goal is to give you the fairest offer possible. We’re transparent about how we arrive at
-              numbers and happy to walk you through it. No games or gotchas.
-            </p>
+            <p className="text-gray-700 leading-relaxed">
+  Our goal is to provide you with the fairest offer possible. Unlike some buyers or big-tech
+  platforms, we’re transparent about how we arrive at our offer. It’s based on the property’s
+  value after the repairs and improvements we’ll handle. We’re happy to walk you through our
+  numbers so you can feel confident in the process.
+</p>
           </div>
 
           <div>
             <h5 className="text-3xl font-extrabold tracking-tight text-gray-900">
               Is this even legit?
             </h5>
-            <p className="mt-3 text-gray-700 leading-relaxed">
-              Yes. The industry is changing fast, and many sellers want a faster, simpler, more transparent
-              option. That’s where we come in—assess your situation, make a clear all-cash offer, and close on
-              your timeline.
-            </p>
+            <p className="text-gray-700 leading-relaxed">
+  Yes. Homeowners across the country are exploring faster, easier, and more transparent
+  ways to sell—especially when a traditional listing isn’t a good fit. That’s where we come
+  in. We offer a trusted alternative for sellers who want certainty and convenience: we
+  assess your situation, make a clear all-cash offer, and close on <em>your</em> timeline.
+</p>
           </div>
         </div>
       </section>
