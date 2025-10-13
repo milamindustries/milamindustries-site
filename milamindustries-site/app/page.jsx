@@ -236,7 +236,7 @@ export default function Page() {
       </section>
 
 {/* --- A QUICKER WAY TO SELL --- */}
-<section className="max-w-6xl mx-auto px-4 py-16">
+<section className="max-w-6xl mx-auto px-4 mt-10 py-16">
   <h2 className="text-2xl md:text-3xl font-bold text-center">
     A Quicker Way To Sell Your House
   </h2>
