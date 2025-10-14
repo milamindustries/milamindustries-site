@@ -32,20 +32,18 @@ export default function RootLayout({ children }) {
        <footer className="bg-gray-900 text-gray-100 py-10">
   <div className="max-w-6xl mx-auto px-6 text-center space-y-6">
     <nav className="flex flex-wrap justify-center gap-6 font-semibold text-white text-base">
-      <a href="/" className="hover:text-gray-300">Get A Cash Offer Today</a>
-      <a href="#contact" className="hover:text-gray-300">Contact Us</a>
+      <a href="/" className="hover:text-gray-300">Home</a>
+      <a href="/services" className="hover:text-gray-300">Services</a>
       <a href="/how-it-works" className="hover:text-gray-300">How It Works</a>
+      <a href="/about" className="hover:text-gray-300">About</a>
       <a href="/faq" className="hover:text-gray-300">FAQ</a>
-      <a href="/about" className="hover:text-gray-300">Our Company</a>
-      <a href="/services" className="hover:text-gray-300">Resources</a>
-      <a href="#" className="hover:text-gray-300">Privacy Policy</a>
-      <a href="#" className="hover:text-gray-300">Blog</a>
+      <a href="#contact" className="hover:text-gray-300">Contact</a>
     </nav>
 
     <p className="text-gray-300 text-sm max-w-3xl mx-auto leading-relaxed">
       We are a real estate solutions and investment firm that specializes in helping homeowners 
       get rid of burdensome houses fast. We are investors and problem solvers who can buy your 
-      house fast with a fair all-cash offer.
+      house quickly with a fair, all-cash offer.
     </p>
 
     <p className="text-gray-400 text-sm mt-4">
@@ -53,6 +51,7 @@ export default function RootLayout({ children }) {
     </p>
   </div>
 </footer>
+
       </body>
     </html>
   );
