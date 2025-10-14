@@ -32,7 +32,7 @@ Using that info, we make a clear, transparent cash offer that reflects current m
     },
     {
       q: 'Are there any fees or commissions to work with you?',
-      a: `No. There are **no fees and no commissions**, and **we pay all standard closing costs**. 
+      a: `No. There are no fees and no commissions, and we pay all standard closing costs. 
 What we offer is what you get.`,
     },
     {
@@ -42,12 +42,12 @@ You decide what’s best for you—no pressure.`,
     },
     {
       q: 'Who handles repairs or cleaning?',
-      a: `We do. You can sell completely **as-is**—no cleaning, no repairs, no junk removal. 
+      a: `We do. You can sell completely as-is—no cleaning, no repairs, no junk removal. 
 Take what you want and leave the rest.`,
     },
     {
       q: 'How fast can you close?',
-      a: `We can often close in as little as **7–14 days** (or on the date you choose). 
+      a: `We can often close in as little as 7–14 days (or on the date you choose). 
 Because we buy with cash, there are no financing delays.`,
     },
     {
@@ -57,7 +57,7 @@ properties needing major repairs—we buy in almost any condition.`,
     },
     {
       q: 'What areas do you buy in?',
-      a: `We buy houses **nationwide**. Whether you’re in a major city, small town, or rural area, 
+      a: `We buy houses nationwide. Whether you’re in a major city, small town, or rural area, 
 we can make a fair cash offer and work on your timeline.`,
     },
   ];
