@@ -122,15 +122,6 @@ export default function ServicesPage() {
         ))}
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-xl font-semibold">FAQ</h2>
-        <details className="mt-3 rounded-lg border bg-white p-4 open:shadow-sm">
-          <summary className="cursor-pointer font-medium">How fast can we close?</summary>
-          <p className="mt-2 text-gray-600">
-            Often in as little as 7–14 days—your timeline drives the process.
-          </p>
-        </details>
-      </section>
     </main>
   );
 }
