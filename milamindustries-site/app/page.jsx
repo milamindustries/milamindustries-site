@@ -399,11 +399,15 @@ function Field({ label, value, onChange }) {
   )
 }
 
-function Input({ label, type='text', required }) {
+function Input({ label, type = 'text', required }) {
   return (
     <label className="block text-sm">
       <span className="text-gray-700">{label}{required && ' *'}</span>
-      <input type={type} required={required} className="mt-1 w-full rounded-xl border px-3 py-2" />
+      <input
+        type={type}
+        required={required}
+        className="mt-1 w-full rounded-xl border px-3 py-2"
+      />
     </label>
-  )
+  );
 }
