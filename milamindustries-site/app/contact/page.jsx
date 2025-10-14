@@ -1,113 +1,308 @@
+// app/contact/page.jsx
+'use client';
+import { useState } from 'react';
+
+export const metadata = {
+  title: 'Contact | Milam Industries LLC',
+  description:
+    'Contact Milam Industries LLC for a fair, no-obligation cash offer. We buy houses nationwide, as-is.',
+};
+
 export default function ContactPage() {
+  // Yes/No toggles that reveal extra inputs
+  const [improvements, setImprovements] = useState('No');
+  const [repairs, setRepairs] = useState('No');
+  const [mortgage, setMortgage] = useState('No');
+  const [liens, setLiens] = useState('No');
+  const [offerReceived, setOfferReceived] = useState('No');
+
+  function onSubmit(e) {
+    e.preventDefault();
+
+    // Collect form data
+    const form = new FormData(e.currentTarget);
+    const data = Object.fromEntries(form.entries());
+
+    // Coerce multi-select/radios as needed
+    data.preferredContact = form.get('preferredContact');
+
+    // Show a friendly confirmation for now.
+    // Next step: wire this to REISift and Google Sheets/Zapier.
+    alert("Thanks! Your info was submitted. We'll reach out shortly.");
+
+    // console.log(data); // uncomment while testing
+  }
+
+  const year = new Date().getFullYear();
+
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-white text-gray-900">
-      {/* HEADER (consistent with rest of site) */}
-      <header className="bg-gray-900 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="font-semibold text-lg">Milam Industries LLC</div>
-          <nav className="space-x-6 text-sm">
-            <a href="/" className="hover:text-gray-300">Home</a>
-            <a href="/services" className="hover:text-gray-300">Services</a>
-            <a href="/how-it-works" className="hover:text-gray-300">How It Works</a>
-            <a href="/about" className="hover:text-gray-300">About</a>
-            <a href="/faq" className="hover:text-gray-300">FAQ</a>
-            <a href="/contact" className="text-green-400 font-semibold">Contact</a>
-          </nav>
-        </div>
-      </header>
+    <section className="max-w-6xl mx-auto px-4 py-16">
+      <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Contact Us</h1>
+      <p className="mt-3 text-gray-700 max-w-2xl">
+        Have questions or want a free, no-obligation cash offer? Tell us a bit about the property
+        below. We buy houses nationwide, in any condition, and work on <b>your</b> timeline.
+      </p>
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1">
-        <section className="max-w-6xl mx-auto px-4 py-16">
-          <h1 className="text-3xl font-bold mb-6">Contact Us</h1>
-          <p className="text-gray-700 max-w-2xl mb-12">
-            We’re here to help. Whether you have questions about selling your property,
-            want a free cash offer, or simply need guidance — our team is ready to assist you nationwide.
-          </p>
+      <div className="mt-10 grid md:grid-cols-2 gap-8">
+        {/* FORM */}
+        <form onSubmit={onSubmit} className="space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
+          {/* Contact details */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="First Name *" name="firstName" required />
+            <Field label="Last Name *" name="lastName" required />
+          </div>
 
-          <div className="grid md:grid-cols-2 gap-10">
-            {/* Contact Form */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Form submitted! We'll reach out shortly.");
-              }}
-              className="space-y-4 bg-gray-50 p-6 rounded-2xl border"
-            >
-              <label className="block text-sm">
-                <span className="text-gray-700">Full Name *</span>
-                <input required className="mt-1 w-full rounded-xl border px-3 py-2" />
-              </label>
+          {/* Property address */}
+          <Field label="Property Address *" name="propertyAddress" required />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Field label="City *" name="city" required />
+            <Field label="State *" name="state" required />
+            <Field label="Zip Code *" name="zip" required inputMode="numeric" />
+          </div>
 
-              <label className="block text-sm">
-                <span className="text-gray-700">Email *</span>
-                <input type="email" required className="mt-1 w-full rounded-xl border px-3 py-2" />
-              </label>
+          {/* Contact info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Email *" name="email" type="email" required />
+            <Field label="Phone *" name="phone" inputMode="tel" required />
+          </div>
 
-              <label className="block text-sm">
-                <span className="text-gray-700">Phone *</span>
-                <input required className="mt-1 w-full rounded-xl border px-3 py-2" />
-              </label>
-
-              <label className="block text-sm">
-                <span className="text-gray-700">Message</span>
-                <textarea rows="4" className="mt-1 w-full rounded-xl border px-3 py-2"></textarea>
-              </label>
-
-              <button
-                type="submit"
-                className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm hover:bg-gray-800"
-              >
-                Send Message
-              </button>
-            </form>
-
-            {/* Contact Info */}
-            <div className="bg-gray-50 p-6 rounded-2xl border">
-              <h2 className="font-semibold text-lg mb-3">Our Contact Information</h2>
-              <p className="text-gray-700 mb-4">
-                <b>Phone:</b> 678-807-8133<br />
-                <b>Email:</b> info@milamindustries.com<br />
-                <b>Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell GA 30076
-              </p>
-
-              <iframe
-                title="Milam Industries HQ"
-                width="100%"
-                height="220"
-                style={{ border: 0, borderRadius: '0.75rem' }}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
-              />
+          {/* Preferred contact method */}
+          <div>
+            <span className="block text-sm text-gray-700 mb-1">Preferred Contact Method *</span>
+            <div className="flex flex-wrap gap-4 text-sm">
+              {['Email', 'Phone', 'Text'].map((opt) => (
+                <label key={opt} className="inline-flex items-center gap-2">
+                  <input type="radio" name="preferredContact" value={opt} required />
+                  <span>{opt}</span>
+                </label>
+              ))}
             </div>
           </div>
-        </section>
-      </main>
 
-      {/* FOOTER */}
-      <footer className="bg-gray-900 text-gray-100 py-10 mt-10">
-        <div className="max-w-6xl mx-auto px-6 text-center space-y-6">
-          <nav className="flex flex-wrap justify-center gap-6 font-semibold text-white text-base">
-            <a href="/" className="hover:text-gray-300">Home</a>
-            <a href="/services" className="hover:text-gray-300">Services</a>
-            <a href="/how-it-works" className="hover:text-gray-300">How It Works</a>
-            <a href="/about" className="hover:text-gray-300">About</a>
-            <a href="/faq" className="hover:text-gray-300">FAQ</a>
-            <a href="/contact" className="hover:text-gray-300">Contact</a>
-          </nav>
+          {/* Why sell */}
+          <TextArea label="Why Sell" name="whySell" rows={4} placeholder="Tell us what’s going on (optional)" />
 
-          <p className="text-gray-300 text-sm max-w-3xl mx-auto leading-relaxed">
-            We are a real estate solutions and investment firm helping homeowners sell
-            quickly and stress-free. Get a fair cash offer, no repairs, no commissions — just results.
+          {/* Property type */}
+          <Select
+            label="Type of Property *"
+            name="propertyType"
+            required
+            options={['Single Family', 'Multi Family', 'Condo', 'Land/Lot', 'Commercial', 'Other']}
+          />
+
+          {/* Beds / Baths */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Select
+              label="How many bedrooms? *"
+              name="bedrooms"
+              required
+              options={['1','2','3','4','5','6','7','8+']}
+            />
+            <Select
+              label="How many bathrooms? *"
+              name="bathrooms"
+              required
+              options={['1','2','3','4','5','6','7','8+']}
+            />
+          </div>
+
+          {/* Size / Year */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field
+              label="Approx. Square Footage"
+              name="sqft"
+              inputMode="numeric"
+              placeholder="e.g., 1850"
+            />
+            <Field
+              label="Year the home was built"
+              name="yearBuilt"
+              inputMode="numeric"
+              placeholder={`${year - 30}`}
+            />
+          </div>
+
+          {/* Improvements (Y/N with reveal) */}
+          <YesNo
+            label="Any property improvements?"
+            name="improvements"
+            value={improvements}
+            onChange={setImprovements}
+          />
+          {improvements === 'Yes' && (
+            <TextArea label="Please describe improvements" name="improvementsDetails" rows={3} />
+          )}
+
+          {/* Repairs (Y/N with reveal) */}
+          <YesNo
+            label="Any known repairs needed?"
+            name="repairs"
+            value={repairs}
+            onChange={setRepairs}
+          />
+          {repairs === 'Yes' && (
+            <TextArea label="Please describe repairs" name="repairsDetails" rows={3} />
+          )}
+
+          {/* Mortgage (Y/N with reveal) */}
+          <YesNo
+            label="Is there a current mortgage?"
+            name="mortgage"
+            value={mortgage}
+            onChange={setMortgage}
+          />
+          {mortgage === 'Yes' && (
+            <TextArea label="Balance / details (optional)" name="mortgageDetails" rows={3} />
+          )}
+
+          {/* Liens (Y/N with reveal) */}
+          <YesNo
+            label="Any liens against the property?"
+            name="liens"
+            value={liens}
+            onChange={setLiens}
+          />
+          {liens === 'Yes' && (
+            <TextArea label="Lien details" name="liensDetails" rows={3} />
+          )}
+
+          {/* Offer received (Y/N with reveal) */}
+          <YesNo
+            label="Have you already received an offer on the property?"
+            name="offerReceived"
+            value={offerReceived}
+            onChange={setOfferReceived}
+          />
+          {offerReceived === 'Yes' && (
+            <TextArea label="Offer amount / details (optional)" name="offerDetails" rows={3} />
+          )}
+
+          {/* Timeline */}
+          <Select
+            label="Desired sale timeline *"
+            name="timeline"
+            required
+            options={['7–14 days','Within 30 days','30–90 days','Within the next 6 months','No timeframe']}
+          />
+
+          {/* How did you hear about us */}
+          <Select
+            label="How did you hear about us?"
+            name="source"
+            options={['Google/Internet Search','Social Media','Referral','Advertisement','Other']}
+          />
+
+          <button
+            type="submit"
+            className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm hover:bg-gray-800"
+          >
+            Submit
+          </button>
+
+          <p className="text-xs text-gray-500">
+            By submitting, you agree to be contacted by Milam Industries LLC. We respect your privacy.
           </p>
+        </form>
 
-          <p className="text-gray-400 text-sm mt-4">
-            © {new Date().getFullYear()} Milam Industries LLC — All rights reserved.
-          </p>
-        </div>
-      </footer>
+        {/* CONTACT INFO (matches your site style) */}
+        <aside className="bg-gray-50 p-6 rounded-2xl border shadow-sm">
+          <h2 className="font-semibold text-lg mb-3">Our Contact Information</h2>
+          <div className="text-gray-700 text-sm space-y-1">
+            <p><b>Phone:</b> 678-807-8133</p>
+            <p><b>Email:</b> info@milamindustries.com</p>
+            <p><b>HQ Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell GA 30076</p>
+          </div>
+
+          <div className="mt-6">
+            <iframe
+              title="Milam Industries HQ"
+              width="100%"
+              height="220"
+              style={{ border: 0, borderRadius: '0.75rem' }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
+            />
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- small field components to keep code tidy ---------- */
+function Field({ label, name, type = 'text', required, inputMode, placeholder }) {
+  return (
+    <label className="block text-sm">
+      <span className="text-gray-700">{label}</span>
+      <input
+        className="mt-1 w-full rounded-xl border px-3 py-2"
+        name={name}
+        type={type}
+        required={required}
+        inputMode={inputMode}
+        placeholder={placeholder}
+      />
+    </label>
+  );
+}
+
+function TextArea({ label, name, rows = 3, placeholder }) {
+  return (
+    <label className="block text-sm">
+      <span className="text-gray-700">{label}</span>
+      <textarea
+        className="mt-1 w-full rounded-xl border px-3 py-2"
+        name={name}
+        rows={rows}
+        placeholder={placeholder}
+      />
+    </label>
+  );
+}
+
+function Select({ label, name, options = [], required }) {
+  return (
+    <label className="block text-sm">
+      <span className="text-gray-700">{label}</span>
+      <select
+        className="mt-1 w-full rounded-xl border px-3 py-2 bg-white"
+        name={name}
+        required={required}
+        defaultValue=""
+      >
+        <option value="" disabled hidden>
+          Select…
+        </option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function YesNo({ label, name, value, onChange }) {
+  return (
+    <div>
+      <span className="block text-sm text-gray-700 mb-1">{label}</span>
+      <div className="flex items-center gap-6 text-sm">
+        {['Yes', 'No'].map((opt) => (
+          <label key={opt} className="inline-flex items-center gap-2">
+            <input
+              type="radio"
+              name={name}
+              value={opt}
+              checked={value === opt}
+              onChange={(e) => onChange(e.target.value)}
+            />
+            <span>{opt}</span>
+          </label>
+        ))}
+      </div>
     </div>
   );
 }
