@@ -20,6 +20,7 @@ export default function RootLayout({ children }) {
               <a className="hover:text-white text-gray-300" href="/services">Services</a>
               <a className="hover:text-white text-gray-300" href="/how-it-works">How It Works</a>
               <a className="hover:text-white text-gray-300" href="/about">About</a>
+              <a className="hover:text-white text-gray-300" href="/faq">FAQ</a>
               <a className="hover:text-white text-gray-300" href="/#contact">Contact</a>
             </nav>
           </div>
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
       <a href="/services" className="block hover:text-white">Services</a>
       <a href="/how-it-works" className="block hover:text-white">How It Works</a>
       <a href="/about" className="block hover:text-white">About</a>
+      <a href="/faq" className="block hover:text-white">FAQ</a>
       <a href="/#contact" className="block hover:text-white">Contact</a>
     </div>
   </div>
