@@ -29,27 +29,28 @@ export default function RootLayout({ children }) {
         {/* Page content */}
         <main className="mx-auto max-w-6xl px-6 pt-8 pb-6">{children}</main>
 
-       <footer className="bg-gray-900 text-gray-300">
-  <div className="max-w-6xl mx-auto px-4 py-10 grid md:grid-cols-2 gap-6">
-    <div>
-      <div className="font-semibold text-white">Milam Industries LLC</div>
-      <p className="text-sm mt-2 max-w-md">
-        Real estate solutions | Nationwide coverage
-      </p>
-    </div>
-    <div className="text-sm md:text-right space-y-1">
-      <a href="/" className="block hover:text-white">Home</a>
-      <a href="/services" className="block hover:text-white">Services</a>
-      <a href="/how-it-works" className="block hover:text-white">How It Works</a>
-      <a href="/about" className="block hover:text-white">About</a>
-      <a href="/faq" className="block hover:text-white">FAQ</a>
-      <a href="/#contact" className="block hover:text-white">Contact</a>
-    </div>
-  </div>
-  <div className="border-t border-white/10">
-    <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-gray-400">
-      © {new Date().getFullYear()} Milam Industries LLC. All rights reserved.
-    </div>
+       <footer className="bg-gray-900 text-gray-100 py-10">
+  <div className="max-w-6xl mx-auto px-6 text-center space-y-6">
+    <nav className="flex flex-wrap justify-center gap-6 font-semibold text-white text-base">
+      <a href="/" className="hover:text-gray-300">Get A Cash Offer Today</a>
+      <a href="#contact" className="hover:text-gray-300">Contact Us</a>
+      <a href="/how-it-works" className="hover:text-gray-300">How It Works</a>
+      <a href="/faq" className="hover:text-gray-300">FAQ</a>
+      <a href="/about" className="hover:text-gray-300">Our Company</a>
+      <a href="/services" className="hover:text-gray-300">Resources</a>
+      <a href="#" className="hover:text-gray-300">Privacy Policy</a>
+      <a href="#" className="hover:text-gray-300">Blog</a>
+    </nav>
+
+    <p className="text-gray-300 text-sm max-w-3xl mx-auto leading-relaxed">
+      We are a real estate solutions and investment firm that specializes in helping homeowners 
+      get rid of burdensome houses fast. We are investors and problem solvers who can buy your 
+      house fast with a fair all-cash offer.
+    </p>
+
+    <p className="text-gray-400 text-sm mt-4">
+      © {new Date().getFullYear()} Milam Industries LLC — All rights reserved.
+    </p>
   </div>
 </footer>
       </body>
