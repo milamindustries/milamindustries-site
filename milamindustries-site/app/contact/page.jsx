@@ -205,6 +205,23 @@ export default function ContactPage() {
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
             />
           </div>
+
+          {/* Trust signals */}
+          <div className="mt-6 border-t pt-4 text-sm text-gray-600 space-y-2">
+            <p>✅ 100% confidential — your information is never shared.</p>
+            <p>🏠 We buy houses nationwide, in any condition.</p>
+            <p>⭐ Trusted by homeowners since 2020.</p>
+          </div>
+
+          {/* Mini "How it works" */}
+          <div className="mt-6 bg-gray-50 p-4 rounded-xl border text-sm">
+            <p className="font-semibold text-gray-800 mb-2">How It Works</p>
+            <ol className="list-decimal list-inside space-y-1 text-gray-700">
+              <li>Submit your property details above.</li>
+              <li>Receive a cash offer within 24–48 hours.</li>
+              <li>Pick your closing date and get paid fast.</li>
+            </ol>
+          </div>
         </aside>
       </div>
     </section>
