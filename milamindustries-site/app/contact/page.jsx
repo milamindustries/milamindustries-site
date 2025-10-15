@@ -1,9 +1,7 @@
 // app/contact/page.jsx
 'use client';
-import { useState } from 'react';
 
-// app/contact/page.jsx
-// Client-side form logic remains unchanged
+import { useState } from 'react';
 
 export default function ContactPage() {
   // Yes/No toggles that reveal extra inputs
@@ -16,6 +14,7 @@ export default function ContactPage() {
   function onSubmit(e) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+    // demo: inspect payload
     console.log(Object.fromEntries(form.entries()));
     alert('Form submitted successfully (demo).');
   }
@@ -65,7 +64,12 @@ export default function ContactPage() {
           </div>
 
           {/* Why sell */}
-          <TextArea label="Why Sell" name="whySell" rows={4} placeholder="Tell us what’s going on (optional)" />
+          <TextArea
+            label="Why Sell"
+            name="whySell"
+            rows={4}
+            placeholder="Tell us what’s going on (optional)"
+          />
 
           {/* Property type */}
           <Select
@@ -78,124 +82,115 @@ export default function ContactPage() {
           {/* Beds / Baths */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select
-              label="How many bedrooms? *"
+              label="How many bedrooms *"
               name="bedrooms"
               required
-              options={['1','2','3','4','5','6','7','8+']}
+              options={['1', '2', '3', '4', '5', '6', '7', '8+']}
             />
             <Select
-              label="How many bathrooms? *"
+              label="How many bathrooms *"
               name="bathrooms"
               required
-              options={['1','2','3','4','5','6','7','8+']}
+              options={['1', '2', '3', '4', '5', '6', '7', '8+']}
             />
           </div>
 
-          {/* Size / Year */}
+          {/* Size / Year built */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field
-              label="Approx. Square Footage"
+              label="Approx. square feet"
               name="sqft"
               inputMode="numeric"
-              placeholder="e.g., 1850"
+              placeholder="e.g., 1650"
             />
             <Field
               label="Year the home was built"
               name="yearBuilt"
               inputMode="numeric"
-              placeholder={`${year - 30}`}
+              placeholder="e.g., 1994"
             />
           </div>
 
-          {/* Improvements (Y/N with reveal) */}
-          <YesNo
+          {/* Condition / toggles with conditional notes */}
+          <YesNoWithText
             label="Any property improvements?"
             name="improvements"
             value={improvements}
-            onChange={setImprovements}
+            setValue={setImprovements}
+            textareaName="improvementsNotes"
+            placeholder="Briefly describe improvements…"
           />
-          {improvements === 'Yes' && (
-            <TextArea label="Please describe improvements" name="improvementsDetails" rows={3} />
-          )}
 
-          {/* Repairs (Y/N with reveal) */}
-          <YesNo
+          <YesNoWithText
             label="Any known repairs needed?"
             name="repairs"
             value={repairs}
-            onChange={setRepairs}
+            setValue={setRepairs}
+            textareaName="repairsNotes"
+            placeholder="What repairs are needed?"
           />
-          {repairs === 'Yes' && (
-            <TextArea label="Please describe repairs" name="repairsDetails" rows={3} />
-          )}
 
-          {/* Mortgage (Y/N with reveal) */}
-          <YesNo
+          <YesNoWithText
             label="Is there a current mortgage?"
             name="mortgage"
             value={mortgage}
-            onChange={setMortgage}
+            setValue={setMortgage}
+            textareaName="mortgageNotes"
+            placeholder="Optional details (balance, behind, etc.)"
           />
-          {mortgage === 'Yes' && (
-            <TextArea label="Balance / details (optional)" name="mortgageDetails" rows={3} />
-          )}
 
-          {/* Liens (Y/N with reveal) */}
-          <YesNo
+          <YesNoWithText
             label="Any liens against the property?"
             name="liens"
             value={liens}
-            onChange={setLiens}
+            setValue={setLiens}
+            textareaName="liensNotes"
+            placeholder="Describe any liens…"
           />
-          {liens === 'Yes' && (
-            <TextArea label="Lien details" name="liensDetails" rows={3} />
-          )}
 
-          {/* Offer received (Y/N with reveal) */}
-          <YesNo
+          <YesNoWithText
             label="Have you already received an offer on the property?"
             name="offerReceived"
             value={offerReceived}
-            onChange={setOfferReceived}
+            setValue={setOfferReceived}
+            textareaName="offerNotes"
+            placeholder="Optional—who/what was offered?"
           />
-          {offerReceived === 'Yes' && (
-            <TextArea label="Offer amount / details (optional)" name="offerDetails" rows={3} />
-          )}
 
           {/* Timeline */}
           <Select
             label="Desired sale timeline *"
             name="timeline"
             required
-            options={['7–14 days','Within 30 days','30–90 days','Within the next 6 months','No timeframe']}
+            options={['7–14 days', 'Within 30 days', '30–90 days', 'Within the next 6 months', 'No timeframe']}
           />
 
           {/* How did you hear about us */}
           <Select
             label="How did you hear about us?"
-            name="source"
-            options={['Google/Internet Search','Social Media','Referral','Advertisement','Other']}
+            name="referralSource"
+            options={['Google/Internet Search', 'Social Media', 'Referral', 'Advertisement', 'Other']}
           />
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm hover:bg-gray-800"
+            className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm"
           >
             Submit
           </button>
 
           <p className="text-xs text-gray-500">
-            By submitting, you agree to be contacted by Milam Industries LLC. We respect your privacy.
+            By submitting, you agree to be contacted by Milam Industries LLC.
           </p>
         </form>
 
-        {/* CONTACT INFO (matches your site style) */}
-        <aside className="bg-gray-50 p-6 rounded-2xl border shadow-sm">
-          <h2 className="font-semibold text-lg mb-3">Our Contact Information</h2>
-          <div className="text-gray-700 text-sm space-y-1">
+        {/* Sidebar contact info */}
+        <aside className="bg-white p-6 rounded-2xl border shadow-sm">
+          <h2 className="font-semibold text-lg">Talk to a team member</h2>
+          <div className="mt-3 text-sm text-gray-700 space-y-1">
             <p><b>Phone:</b> 678-807-8133</p>
             <p><b>Email:</b> info@milamindustries.com</p>
-            <p><b>HQ Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell GA 30076</p>
+            <p><b>HQ Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell, GA 30076</p>
           </div>
 
           <div className="mt-6">
@@ -216,15 +211,16 @@ export default function ContactPage() {
   );
 }
 
-/* ---------- small field components to keep code tidy ---------- */
+/* ---------- Small form primitives ---------- */
+
 function Field({ label, name, type = 'text', required, inputMode, placeholder }) {
   return (
     <label className="block text-sm">
       <span className="text-gray-700">{label}</span>
       <input
         className="mt-1 w-full rounded-xl border px-3 py-2"
-        name={name}
         type={type}
+        name={name}
         required={required}
         inputMode={inputMode}
         placeholder={placeholder}
@@ -257,7 +253,7 @@ function Select({ label, name, options = [], required }) {
         required={required}
         defaultValue=""
       >
-        <option value="" disabled hidden>
+        <option value="" disabled>
           Select…
         </option>
         {options.map((opt) => (
@@ -270,11 +266,18 @@ function Select({ label, name, options = [], required }) {
   );
 }
 
-function YesNo({ label, name, value, onChange }) {
+function YesNoWithText({
+  label,
+  name,
+  value,
+  setValue,
+  textareaName,
+  placeholder,
+}) {
   return (
     <div>
       <span className="block text-sm text-gray-700 mb-1">{label}</span>
-      <div className="flex items-center gap-6 text-sm">
+      <div className="flex gap-6 text-sm">
         {['Yes', 'No'].map((opt) => (
           <label key={opt} className="inline-flex items-center gap-2">
             <input
@@ -282,12 +285,21 @@ function YesNo({ label, name, value, onChange }) {
               name={name}
               value={opt}
               checked={value === opt}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={(e) => setValue(e.target.value)}
+              required
             />
             <span>{opt}</span>
           </label>
         ))}
       </div>
+      {value === 'Yes' && (
+        <textarea
+          className="mt-3 w-full rounded-xl border px-3 py-2 text-sm"
+          name={textareaName}
+          rows={3}
+          placeholder={placeholder}
+        />
+      )}
     </div>
   );
 }
