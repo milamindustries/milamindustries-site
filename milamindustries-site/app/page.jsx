@@ -346,45 +346,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-      
-      {/* CONTACT */}
-      <section id="contact" className="bg-white border-t">
-        <div className="max-w-6xl mx-auto px-4 py-16">
-          <h2 className="text-2xl md:text-3xl font-bold">Get your offer</h2>
-          <p className="mt-2 text-gray-600 max-w-2xl">{data.contact.leadText}</p>
-          <div className="mt-8 grid md:grid-cols-2 gap-6">
-            <form onSubmit={(e)=>{e.preventDefault(); alert('Form submitted (demo). We\'ll wire this to email/CRM next.');}} className="space-y-3 bg-gray-50 p-6 rounded-2xl border">
-              <Input label="Full name" required/>
-              <Input label="Phone" required/>
-              <Input label="Email" type="email"/>
-              <Input label="Property address" required/>
-              <Input label="Best time to contact"/>
-              <button type="submit" className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm">Request offer</button>
-              <p className="text-xs text-gray-500">By submitting, you agree to be contacted by {data.brand.name}.</p>
-            </form>
-            <div className="bg-gray-50 p-6 rounded-2xl border">
-              <h3 className="font-semibold">Contact</h3>
-              <div className="mt-3 text-sm text-gray-700 space-y-1">
-                <p><b>Phone:</b> {data.contact.phone}</p>
-                <p><b>Email:</b> {data.contact.email}</p>
-                <p><b>HQ Office:</b> {data.contact.office}</p>
-              </div>
-              <div className="mt-6">
-                <iframe
-                  title="Milam Industries HQ"
-                  width="100%"
-                  height="220"
-                  style={{ border: 0, borderRadius: '0.75rem' }}
-                  loading="lazy"
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
     </div>
   )
