@@ -24,7 +24,6 @@ const defaultData = {
     subtitle:
       "We buy houses in any condition, in any situation, no closing cost, no fees, and quick closing. Get a free no risk, no obligation cash offer.",
     ctaPrimary: "Get a cash offer",
-    ctaSecondary: "Learn more",
     imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1600&auto=format&fit=crop",
   },
   services: [
