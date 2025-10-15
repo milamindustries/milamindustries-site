@@ -2,11 +2,8 @@
 'use client';
 import { useState } from 'react';
 
-export const metadata = {
-  title: 'Contact | Milam Industries LLC',
-  description:
-    'Contact Milam Industries LLC for a fair, no-obligation cash offer. We buy houses nationwide, as-is.',
-};
+// app/contact/page.jsx
+// Client-side form logic remains unchanged
 
 export default function ContactPage() {
   // Yes/No toggles that reveal extra inputs
@@ -18,22 +15,10 @@ export default function ContactPage() {
 
   function onSubmit(e) {
     e.preventDefault();
-
-    // Collect form data
     const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form.entries());
-
-    // Coerce multi-select/radios as needed
-    data.preferredContact = form.get('preferredContact');
-
-    // Show a friendly confirmation for now.
-    // Next step: wire this to REISift and Google Sheets/Zapier.
-    alert("Thanks! Your info was submitted. We'll reach out shortly.");
-
-    // console.log(data); // uncomment while testing
+    console.log(Object.fromEntries(form.entries()));
+    alert('Form submitted successfully (demo).');
   }
-
-  const year = new Date().getFullYear();
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-16">
