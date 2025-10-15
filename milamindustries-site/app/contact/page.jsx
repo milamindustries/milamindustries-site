@@ -65,7 +65,7 @@ export default function ContactPage() {
 
           {/* Why sell? */}
           <TextArea
-            label="Why Sell"
+            label="Why Sell?"
             name="whySell"
             rows={4}
             placeholder="Tell us what’s going on (optional)"
@@ -140,7 +140,7 @@ export default function ContactPage() {
           />
 
           <YesNoWithText
-            label="Is there any liens against the property?"
+            label="Are there any liens against the property?"
             name="liens"
             value={liens}
             setValue={setLiens}
