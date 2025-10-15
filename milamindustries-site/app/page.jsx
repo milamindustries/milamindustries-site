@@ -11,13 +11,13 @@ const defaultData = {
     primary: "#111827",
     accent: "#22c55e",
   },
-nav: [
-  { label: "Home", href: "#home" },
-  { label: "Services", href: "/services" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-],
+  nav: [
+    { label: "Home", href: "#home" },
+    { label: "Services", href: "/services" },
+    { label: "How It Works", href: "/how-it-works" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+  ],
 
   hero: {
     title: "Sell your house fast, the hassle-free way.",
@@ -80,7 +80,8 @@ export default function Page() {
           <p className="mt-4 text-lg md:text-xl max-w-2xl text-gray-700">{data.hero.subtitle}</p>
           <p className="mt-2 text-green-700 font-medium">We proudly operate Nationwide.</p>
           <div className="mt-8 flex gap-3">
-            <a href="#contact" className="px-5 py-3 rounded-2xl bg-gray-900 text-white text-sm shadow">{data.hero.ctaPrimary}</a>
+            {/* CHANGED: route to /contact */}
+            <a href="/contact" className="px-5 py-3 rounded-2xl bg-gray-900 text-white text-sm shadow">{data.hero.ctaPrimary}</a>
             <a href="#services" className="px-5 py-3 rounded-2xl border border-gray-300 text-sm">{data.hero.ctaSecondary}</a>
           </div>
         </div>
@@ -113,7 +114,7 @@ export default function Page() {
           ))}
         </div>
 
-      {/* SITUATIONS WE HELP WITH */}
+        {/* SITUATIONS WE HELP WITH */}
         <div className="mt-16">
           <h3 className="text-2xl md:text-3xl font-bold text-center">
             We buy houses in any situation
@@ -235,116 +236,116 @@ export default function Page() {
         </div>
       </section>
 
-{/* --- A QUICKER WAY TO SELL --- */}
-<section className="max-w-6xl mx-auto px-4 pt-0 pb-16">
-  <h2 className="text-2xl md:text-3xl font-bold text-center">
-    A Quicker Way To Sell Your House
-  </h2>
+      {/* --- A QUICKER WAY TO SELL --- */}
+      <section className="max-w-6xl mx-auto px-4 pt-0 pb-16">
+        <h2 className="text-2xl md:text-3xl font-bold text-center">
+          A Quicker Way To Sell Your House
+        </h2>
 
-  <p className="mt-4 text-gray-700 text-center max-w-3xl mx-auto">
-    Is there a way to skip the uncertainty and lengthy process of a traditional home sale?
-    Yes—sell directly to Milam Industries LLC. We buy houses for cash nationwide so you can
-    sell fast without showings or paying an agent’s commission.
-  </p>
-  <p className="mt-2 text-gray-700 text-center max-w-3xl mx-auto">
-    When you work with our Cash Home Buyer program, the process is simple, transparent, and on your timeline.
-  </p>
-
-  <div className="mt-10 grid md:grid-cols-2 gap-6">
-    <div className="bg-white rounded-2xl p-6 border shadow-sm">
-      <h3 className="text-xl font-semibold">No Commissions</h3>
-      <p className="mt-3 text-gray-700 text-sm">
-        No commissions (and we’ll pay standard closing costs). Our profit comes from
-        fixing up the property and selling it later—we don’t charge you fees.
-      </p>
-    </div>
-    <div className="bg-white rounded-2xl p-6 border shadow-sm">
-      <h3 className="text-xl font-semibold">Private Home Sale</h3>
-      <p className="mt-3 text-gray-700 text-sm">
-        Fully confidential. Avoid sharing your info with agents, dozens of buyers, and the MLS.
-        Our process is discreet and straightforward.
-      </p>
-    </div>
-  </div>
-
-  <div className="mt-6 grid md:grid-cols-2 gap-6">
-    <div className="bg-white rounded-2xl p-6 border shadow-sm">
-      <h3 className="text-xl font-semibold">Sell In As-Is Condition</h3>
-      <p className="mt-3 text-gray-700 text-sm">
-        When we say “we buy houses as-is,” we mean it. If there are repairs you don’t want to make,
-        that’s fine—we’ll handle them after we buy.
-      </p>
-    </div>
-    <div className="bg-white rounded-2xl p-6 border shadow-sm">
-      <h3 className="text-xl font-semibold">No Repairs Needed</h3>
-      <p className="mt-3 text-gray-700 text-sm">
-        We deal with repairs ourselves once we purchase your home—from small fixes to full renovations.
-      </p>
-    </div>
-    <div className="bg-white rounded-2xl p-6 border shadow-sm">
-      <h3 className="text-xl font-semibold">Fast Cash Sale</h3>
-      <p className="mt-3 text-gray-700 text-sm">
-        We can make a decision quickly. No waiting around for buyer financing—we’re ready to buy now.
-      </p>
-    </div>
-    <div className="bg-white rounded-2xl p-6 border shadow-sm">
-      <h3 className="text-xl font-semibold">No Cleaning Needed</h3>
-      <p className="mt-3 text-gray-700 text-sm">
-        We’ll handle the clean-out so you don’t have to prep for open houses or showings.
-      </p>
-    </div>
-  </div>
-</section>
-
-{/* --- OPTIONS FOR SELLING --- */}
-<section className="max-w-6xl mx-auto px-4 pb-16">
-  <div className="bg-gray-100 p-8 md:p-10 rounded-2xl border">
-    <h2 className="text-2xl md:text-3xl font-bold text-center">
-      Options For Selling Your House Fast
-    </h2>
-    <p className="mt-3 text-gray-700 text-center max-w-3xl mx-auto">
-      You’ve got choices. Here are three common paths homeowners compare when they want to sell quickly.
-    </p>
-
-    <div className="mt-10 grid md:grid-cols-3 gap-8">
-      {/* 1 */}
-      <div className="bg-white rounded-2xl p-6 border shadow-sm">
-        <div className="text-4xl font-bold text-gray-900">1</div>
-        <h3 className="mt-4 text-lg font-semibold">
-          List your house with a real estate agent
-        </h3>
-        <p className="mt-3 text-gray-700 text-sm">
-          From listing to cash in hand is commonly 45–90+ days. You’ll handle showings,
-          inspections, appraisals, buyer financing, and agent commissions.
+        <p className="mt-4 text-gray-700 text-center max-w-3xl mx-auto">
+          Is there a way to skip the uncertainty and lengthy process of a traditional home sale?
+          Yes—sell directly to Milam Industries LLC. We buy houses for cash nationwide so you can
+          sell fast without showings or paying an agent’s commission.
         </p>
-      </div>
-
-      {/* 2 */}
-      <div className="bg-white rounded-2xl p-6 border shadow-sm">
-        <div className="text-4xl font-bold text-gray-900">2</div>
-        <h3 className="mt-4 text-lg font-semibold">
-          Sell the house yourself (FSBO)
-        </h3>
-        <p className="mt-3 text-gray-700 text-sm">
-          Save on commissions, but take on all the work: marketing, showings, contracts,
-          negotiating, and coordinating closing—often a big time commitment.
+        <p className="mt-2 text-gray-700 text-center max-w-3xl mx-auto">
+          When you work with our Cash Home Buyer program, the process is simple, transparent, and on your timeline.
         </p>
-      </div>
 
-      {/* 3 */}
-      <div className="bg-white rounded-2xl p-6 border shadow-sm">
-        <div className="text-4xl font-bold text-gray-900">3</div>
-        <h3 className="mt-4 text-lg font-semibold">
-          Sell for cash to Milam Industries LLC
-        </h3>
-        <p className="mt-3 text-gray-700 text-sm">
-          Skip listings and repairs. Pick your closing date, get a transparent all-cash
-          offer, and close on your timeline. No obligations and no pressure.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
+        <div className="mt-10 grid md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
+            <h3 className="text-xl font-semibold">No Commissions</h3>
+            <p className="mt-3 text-gray-700 text-sm">
+              No commissions (and we’ll pay standard closing costs). Our profit comes from
+              fixing up the property and selling it later—we don’t charge you fees.
+            </p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
+            <h3 className="text-xl font-semibold">Private Home Sale</h3>
+            <p className="mt-3 text-gray-700 text-sm">
+              Fully confidential. Avoid sharing your info with agents, dozens of buyers, and the MLS.
+              Our process is discreet and straightforward.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
+            <h3 className="text-xl font-semibold">Sell In As-Is Condition</h3>
+            <p className="mt-3 text-gray-700 text-sm">
+              When we say “we buy houses as-is,” we mean it. If there are repairs you don’t want to make,
+              that’s fine—we’ll handle them after we buy.
+            </p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
+            <h3 className="text-xl font-semibold">No Repairs Needed</h3>
+            <p className="mt-3 text-gray-700 text-sm">
+              We deal with repairs ourselves once we purchase your home—from small fixes to full renovations.
+            </p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
+            <h3 className="text-xl font-semibold">Fast Cash Sale</h3>
+            <p className="mt-3 text-gray-700 text-sm">
+              We can make a decision quickly. No waiting around for buyer financing—we’re ready to buy now.
+            </p>
+          </div>
+          <div className="bg-white rounded-2xl p-6 border shadow sm">
+            <h3 className="text-xl font-semibold">No Cleaning Needed</h3>
+            <p className="mt-3 text-gray-700 text-sm">
+              We’ll handle the clean-out so you don’t have to prep for open houses or showings.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* --- OPTIONS FOR SELLING --- */}
+      <section className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="bg-gray-100 p-8 md:p-10 rounded-2xl border">
+          <h2 className="text-2xl md:text-3xl font-bold text-center">
+            Options For Selling Your House Fast
+          </h2>
+          <p className="mt-3 text-gray-700 text-center max-w-3xl mx-auto">
+            You’ve got choices. Here are three common paths homeowners compare when they want to sell quickly.
+          </p>
+
+          <div className="mt-10 grid md:grid-cols-3 gap-8">
+            {/* 1 */}
+            <div className="bg-white rounded-2xl p-6 border shadow-sm">
+              <div className="text-4xl font-bold text-gray-900">1</div>
+              <h3 className="mt-4 text-lg font-semibold">
+                List your house with a real estate agent
+              </h3>
+              <p className="mt-3 text-gray-700 text-sm">
+                From listing to cash in hand is commonly 45–90+ days. You’ll handle showings,
+                inspections, appraisals, buyer financing, and agent commissions.
+              </p>
+            </div>
+
+            {/* 2 */}
+            <div className="bg-white rounded-2xl p-6 border shadow-sm">
+              <div className="text-4xl font-bold text-gray-900">2</div>
+              <h3 className="mt-4 text-lg font-semibold">
+                Sell the house yourself (FSBO)
+              </h3>
+              <p className="mt-3 text-gray-700 text-sm">
+                Save on commissions, but take on all the work: marketing, showings, contracts,
+                negotiating, and coordinating closing—often a big time commitment.
+              </p>
+            </div>
+
+            {/* 3 */}
+            <div className="bg-white rounded-2xl p-6 border shadow-sm">
+              <div className="text-4xl font-bold text-gray-900">3</div>
+              <h3 className="mt-4 text-lg font-semibold">
+                Sell for cash to Milam Industries LLC
+              </h3>
+              <p className="mt-3 text-gray-700 text-sm">
+                Skip listings and repairs. Pick your closing date, get a transparent all-cash
+                offer, and close on your timeline. No obligations and no pressure.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* CONTACT */}
       <section id="contact" className="bg-white border-t">
@@ -370,16 +371,15 @@ export default function Page() {
               </div>
               <div className="mt-6">
                 <iframe
-  title="Milam Industries HQ"
-  width="100%"
-  height="220"
-  style={{ border: 0, borderRadius: '0.75rem' }}
-  loading="lazy"
-  allowFullScreen
-  referrerPolicy="no-referrer-when-downgrade"
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
-/>
-
+                  title="Milam Industries HQ"
+                  width="100%"
+                  height="220"
+                  style={{ border: 0, borderRadius: '0.75rem' }}
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
+                />
               </div>
             </div>
           </div>
