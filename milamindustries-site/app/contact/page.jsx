@@ -236,7 +236,7 @@ export default function ContactPage() {
           <div className="mt-6 border-t pt-4 text-sm text-gray-600 space-y-2">
             <p>✅ 100% confidential — your information is never shared.</p>
             <p>🏠 We buy houses nationwide, in any condition.</p>
-            <p>⭐ Trusted by homeowners since 2020.</p>
+            <p>🤝 Over a decade of trusted customer service and client-focused solutions.</p>
           </div>
 
           {/* Mini "How it works" */}
