@@ -61,7 +61,7 @@ export default function Page() {
       const next = structuredClone(prev);
       const keys = path.split('.');
       let obj = next;
-      for (let i=0;i<keys.length-1;i++) obj = obj[keys[i]];
+      for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]];
       obj[keys.at(-1)] = value;
       return next;
     });
@@ -79,9 +79,11 @@ export default function Page() {
           <p className="mt-4 text-lg md:text-xl max-w-2xl text-gray-700">{data.hero.subtitle}</p>
           <p className="mt-2 text-green-700 font-medium">We proudly operate Nationwide.</p>
           <div className="mt-8 flex gap-3">
-            {/* CHANGED: route to /contact */}
-            <a href="/contact" className="px-5 py-3 rounded-2xl bg-gray-900 text-white text-sm shadow">{data.hero.ctaPrimary}</a>
-            <a href="#services" className="px-5 py-3 rounded-2xl border border-gray-300 text-sm">{data.hero.ctaSecondary}</a>
+            {/* Route to the Contact page */}
+            <a href="/contact" className="px-5 py-3 rounded-2xl bg-gray-900 text-white text-sm shadow">
+              {data.hero.ctaPrimary}
+            </a>
+            {/* Secondary CTA removed */}
           </div>
         </div>
       </section>
@@ -90,12 +92,12 @@ export default function Page() {
       {edit && (
         <div className="max-w-6xl mx-auto px-4 mt-6 mb-2">
           <div className="grid md:grid-cols-2 gap-4 bg-white p-4 rounded-2xl border">
-            <Field label="Brand Name" value={data.brand.name} onChange={v=>update('brand.name', v)} />
-            <Field label="Tagline" value={data.brand.tagline} onChange={v=>update('brand.tagline', v)} />
-            <Field label="Logo URL" value={data.brand.logoUrl} onChange={v=>update('brand.logoUrl', v)} />
-            <Field label="Hero Title" value={data.hero.title} onChange={v=>update('hero.title', v)} />
-            <Field label="Hero Subtitle" value={data.hero.subtitle} onChange={v=>update('hero.subtitle', v)} />
-            <Field label="Hero Image URL" value={data.hero.imageUrl} onChange={v=>update('hero.imageUrl', v)} />
+            <Field label="Brand Name" value={data.brand.name} onChange={v => update('brand.name', v)} />
+            <Field label="Tagline" value={data.brand.tagline} onChange={v => update('brand.tagline', v)} />
+            <Field label="Logo URL" value={data.brand.logoUrl} onChange={v => update('brand.logoUrl', v)} />
+            <Field label="Hero Title" value={data.hero.title} onChange={v => update('hero.title', v)} />
+            <Field label="Hero Subtitle" value={data.hero.subtitle} onChange={v => update('hero.subtitle', v)} />
+            <Field label="Hero Image URL" value={data.hero.imageUrl} onChange={v => update('hero.imageUrl', v)} />
           </div>
           <p className="text-xs text-gray-500 mt-2">Tip: paste your real logo & photos to instantly brand the site.</p>
         </div>
@@ -287,7 +289,7 @@ export default function Page() {
               We can make a decision quickly. No waiting around for buyer financing—we’re ready to buy now.
             </p>
           </div>
-          <div className="bg-white rounded-2xl p-6 border shadow sm">
+          <div className="bg-white rounded-2xl p-6 border shadow-sm">
             <h3 className="text-xl font-semibold">No Cleaning Needed</h3>
             <p className="mt-3 text-gray-700 text-sm">
               We’ll handle the clean-out so you don’t have to prep for open houses or showings.
@@ -354,7 +356,7 @@ function Field({ label, value, onChange }) {
   return (
     <label className="text-sm block">
       <div className="text-gray-600 mb-1">{label}</div>
-      <input className="w-full rounded-xl border px-3 py-2" value={value} onChange={(e)=>onChange(e.target.value)} />
+      <input className="w-full rounded-xl border px-3 py-2" value={value} onChange={(e) => onChange(e.target.value)} />
     </label>
   )
 }
