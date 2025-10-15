@@ -63,7 +63,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Why sell */}
+          {/* Why sell? */}
           <TextArea
             label="Why Sell"
             name="whySell"
@@ -82,13 +82,13 @@ export default function ContactPage() {
           {/* Beds / Baths */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select
-              label="How many bedrooms *"
+              label="How many bedrooms? *"
               name="bedrooms"
               required
               options={['1', '2', '3', '4', '5', '6', '7', '8+']}
             />
             <Select
-              label="How many bathrooms *"
+              label="How many bathrooms? *"
               name="bathrooms"
               required
               options={['1', '2', '3', '4', '5', '6', '7', '8+']}
@@ -140,7 +140,7 @@ export default function ContactPage() {
           />
 
           <YesNoWithText
-            label="Any liens against the property?"
+            label="Is there any liens against the property?"
             name="liens"
             value={liens}
             setValue={setLiens}
@@ -162,7 +162,7 @@ export default function ContactPage() {
             label="Desired sale timeline *"
             name="timeline"
             required
-            options={['7–14 days', 'Within 30 days', '30–90 days', 'Within the next 6 months', 'No timeframe']}
+            options={['7–14 days', '30-60 days', '60–90 days', 'Within the next 6 months', 'No timeframe']}
           />
 
           {/* How did you hear about us */}
