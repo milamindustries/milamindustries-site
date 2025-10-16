@@ -20,7 +20,10 @@ export default function ContactPage() {
     setStatus(null);
     setLoading(true);
 
-    const form = new FormData(e.currentTarget);
+    // IMPORTANT: capture the form element before any await (React pools the event)
+    const formEl = e.currentTarget;
+
+    const form = new FormData(formEl);
     const data = Object.fromEntries(form.entries());
 
     // Normalize/augment for Zapier/Sheets/REISift
@@ -57,21 +60,18 @@ export default function ContactPage() {
         body: JSON.stringify(payload),
       });
 
-      // Try to parse JSON even on non-2xx for helpful messages
       let json = {};
       try {
         json = await res.json();
       } catch {
-        /* ignore parse errors */
+        /* ignore */
       }
 
       if (!res.ok || json?.ok === false) {
-        // Show a precise error if our API provided one
         const errMsg = json?.error || 'Submit failed';
         throw new Error(errMsg);
       }
 
-      // Show success to the visitor *even if* Zapier forwarding was not 200
       const msg =
         json?.forwarded === false
           ? 'Thanks—got it! (Heads up: delivery to our CRM is retrying in the background.)'
@@ -79,15 +79,14 @@ export default function ContactPage() {
 
       setStatus({ type: 'success', msg });
 
-      // Reset the form and radio toggle UI
-      e.currentTarget.reset();
+      // Use the saved reference instead of e.currentTarget
+      formEl.reset();
       setImprovements('No');
       setRepairs('No');
       setMortgage('No');
       setLiens('No');
       setOfferReceived('No');
 
-      // Optional: debug info in console so you can see upstream status if needed
       if (typeof window !== 'undefined') {
         console.debug('Lead submit → API response:', {
           ok: json?.ok,
