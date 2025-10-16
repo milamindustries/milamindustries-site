@@ -3,6 +3,8 @@
 
 import { useState } from 'react';
 
+const ZAP_URL = 'https://hooks.zapier.com/hooks/catch/25013320/u5vmpeb/';
+
 export default function ContactPage() {
   // Yes/No toggles that reveal extra inputs
   const [improvements, setImprovements] = useState('No');
@@ -11,12 +13,68 @@ export default function ContactPage() {
   const [liens, setLiens] = useState('No');
   const [offerReceived, setOfferReceived] = useState('No');
 
-  function onSubmit(e) {
+  // UI state
+  const [status, setStatus] = useState(null); // { type: 'success' | 'error', msg: string }
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e) {
     e.preventDefault();
+    setStatus(null);
+    setLoading(true);
+
+    // Collect form values into a plain object
     const form = new FormData(e.currentTarget);
-    // demo: inspect payload
-    console.log(Object.fromEntries(form.entries()));
-    alert('Form submitted successfully (demo).');
+    const data = Object.fromEntries(form.entries());
+
+    // Optional: normalize a few fields / add helpful metadata
+    const payload = {
+      ...data,
+      submittedAt: new Date().toISOString(),
+      fullName: [data.firstName, data.lastName].filter(Boolean).join(' ').trim(),
+      flags: {
+        improvements: { value: data.improvements === 'Yes', notes: data.improvementsNotes || '' },
+        repairs: { value: data.repairs === 'Yes', notes: data.repairsNotes || '' },
+        mortgage: { value: data.mortgage === 'Yes', notes: data.mortgageNotes || '' },
+        liens: { value: data.liens === 'Yes', notes: data.liensNotes || '' },
+        offerReceived: { value: data.offerReceived === 'Yes', notes: data.offerNotes || '' },
+      },
+      address: {
+        street: data.propertyAddress || '',
+        city: data.city || '',
+        state: data.state || '',
+        zip: data.zip || '',
+      },
+      property: {
+        type: data.propertyType || '',
+        bedrooms: data.bedrooms || '',
+        bathrooms: data.bathrooms || '',
+        sqFt: data.sqft || '',
+        yearBuilt: data.yearBuilt || '',
+      },
+    };
+
+    try {
+      const res = await fetch(ZAP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Zapier webhook returned an error');
+      }
+
+      setStatus({ type: 'success', msg: 'Thanks—got it! We’ll contact you shortly.' });
+      e.currentTarget.reset();
+      // reset toggle UI back to "No" so conditional textareas close
+      setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
+    } catch (err) {
+      console.error(err);
+      setStatus({ type: 'error', msg: 'There was an error submitting the form. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -172,11 +230,23 @@ export default function ContactPage() {
             options={['Google/Internet Search', 'Social Media', 'Referral', 'Advertisement', 'Other']}
           />
 
+          {/* Status / errors */}
+          {status && (
+            <div
+              className={`text-sm rounded-md p-3 ${
+                status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+              }`}
+            >
+              {status.msg}
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm"
+            className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm disabled:opacity-60"
+            disabled={loading}
           >
-            Submit
+            {loading ? 'Submitting…' : 'Submit'}
           </button>
 
           <p className="text-xs text-gray-500">
@@ -206,32 +276,32 @@ export default function ContactPage() {
             />
           </div>
 
-{/* Click-to-Call & Text CTA */}
-<div className="mt-6 bg-gray-900 text-white p-5 rounded-xl text-center shadow-sm">
-  <p className="text-base font-semibold">Prefer to speak directly?</p>
-  <p className="mt-1 text-sm">
-    <a
-      href="tel:+16788078133"
-      className="underline hover:text-gray-300"
-      aria-label="Call Milam Industries LLC now"
-    >
-      📞 Call us now
-    </a>{' '}
-    or{' '}
-    <a
-      href="sms:+16788078133"
-      className="underline hover:text-gray-300"
-      aria-label="Text Milam Industries LLC"
-    >
-      💬 Text us
-    </a>
-    .
-  </p>
-  <p className="mt-1 text-xs text-gray-300">
-    Our team is available 7 days a week to answer your questions.
-  </p>
-</div>
-          
+          {/* Click-to-Call & Text CTA */}
+          <div className="mt-6 bg-gray-900 text-white p-5 rounded-xl text-center shadow-sm">
+            <p className="text-base font-semibold">Prefer to speak directly?</p>
+            <p className="mt-1 text-sm">
+              <a
+                href="tel:+16788078133"
+                className="underline hover:text-gray-300"
+                aria-label="Call Milam Industries LLC now"
+              >
+                📞 Call us now
+              </a>{' '}
+              or{' '}
+              <a
+                href="sms:+16788078133"
+                className="underline hover:text-gray-300"
+                aria-label="Text Milam Industries LLC"
+              >
+                💬 Text us
+              </a>
+              .
+            </p>
+            <p className="mt-1 text-xs text-gray-300">
+              Our team is available 7 days a week to answer your questions.
+            </p>
+          </div>
+
           {/* Trust signals */}
           <div className="mt-6 border-t pt-4 text-sm text-gray-600 space-y-2">
             <p>✅ 100% confidential — your information is never shared.</p>
