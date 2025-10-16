@@ -1,33 +1,25 @@
 // app/api/lead/route.js
 import { NextResponse } from 'next/server';
 
-const ZAP_URL =
-  process.env.ZAPIER_HOOK_URL ||
-  'https://hooks.zapier.com/hooks/catch/25013320/u5vmpeb/';
+const ZAP_URL = process.env.ZAPIER_HOOK_URL; // no fallback
 
 export async function POST(req) {
-  // Always respond with a clear, friendly JSON so the frontend can show success.
+  if (!ZAP_URL) {
+    return NextResponse.json(
+      { ok: false, error: 'Missing ZAPIER_HOOK_URL env var on the server.' },
+      { status: 500 }
+    );
+  }
+
   try {
     let data = {};
     try {
       data = await req.json();
     } catch {
-      return NextResponse.json(
-        { ok: false, error: 'Invalid JSON body' },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: 'Invalid JSON body' }, { status: 400 });
     }
 
-    // Soft requirements only (commented out for now)
-    // if (!data?.firstName || !data?.phone) {
-    //   return NextResponse.json(
-    //     { ok: false, error: 'Please include first name and phone' },
-    //     { status: 400 }
-    //   );
-    // }
-
-    // Try to forward to Zapier but DO NOT fail the whole request if it errors.
-    let upstreamOk = false;
+    let forwarded = false;
     let upstreamStatus = null;
     let upstreamBody = '';
 
@@ -37,21 +29,19 @@ export async function POST(req) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+      forwarded = resp.ok;
       upstreamStatus = resp.status;
       upstreamBody = await resp.text();
-      upstreamOk = resp.ok;
     } catch (e) {
-      upstreamOk = false;
+      forwarded = false;
       upstreamBody = e?.message || 'Network error sending to Zapier';
     }
 
-    // Return success to the browser so the user sees a success state.
-    // Include debug info so you (not the visitor) can inspect if needed.
     return NextResponse.json({
       ok: true,
-      forwarded: upstreamOk,
+      forwarded,
       upstreamStatus,
-      upstreamBody: upstreamBody?.slice(0, 500), // trim
+      upstreamBody: upstreamBody?.slice(0, 500),
     });
   } catch (err) {
     return NextResponse.json(
