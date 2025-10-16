@@ -1,7 +1,17 @@
 // app/api/lead/route.js
 import { NextResponse } from 'next/server';
 
-const ZAP_URL = process.env.ZAPIER_HOOK_URL; // no fallback
+const ZAP_URL = process.env.ZAPIER_HOOK_URL; // env only
+
+export async function GET() {
+  // TEMP: helps verify the server can see the env var
+  const hook = process.env.ZAPIER_HOOK_URL || '';
+  return NextResponse.json({
+    ok: true,
+    // mask most of it for safety
+    hookPreview: hook ? hook.slice(0, 40) + '…' : null
+  });
+}
 
 export async function POST(req) {
   if (!ZAP_URL) {
