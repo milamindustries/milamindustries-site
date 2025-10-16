@@ -3,8 +3,6 @@
 
 import { useState } from 'react';
 
-const ZAP_URL = 'https://hooks.zapier.com/hooks/catch/25013320/u5vmpeb/';
-
 export default function ContactPage() {
   // Yes/No toggles that reveal extra inputs
   const [improvements, setImprovements] = useState('No');
@@ -22,11 +20,10 @@ export default function ContactPage() {
     setStatus(null);
     setLoading(true);
 
-    // Collect form values into a plain object
     const form = new FormData(e.currentTarget);
     const data = Object.fromEntries(form.entries());
 
-    // Optional: normalize a few fields / add helpful metadata
+    // Normalize/augment for Zapier/Sheets/REISift
     const payload = {
       ...data,
       submittedAt: new Date().toISOString(),
@@ -54,20 +51,19 @@ export default function ContactPage() {
     };
 
     try {
-      const res = await fetch(ZAP_URL, {
+      const res = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || 'Zapier webhook returned an error');
+      const json = await res.json();
+      if (!res.ok || !json?.ok) {
+        throw new Error(json?.error || 'Submit failed');
       }
 
       setStatus({ type: 'success', msg: 'Thanks—got it! We’ll contact you shortly.' });
       e.currentTarget.reset();
-      // reset toggle UI back to "No" so conditional textareas close
       setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
     } catch (err) {
       console.error(err);
