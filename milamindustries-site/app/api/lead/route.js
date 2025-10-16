@@ -1,27 +1,26 @@
-// app/api/lead/route.ts
-import { NextResponse } from "next/server";
+// app/api/lead/route.js
+import { NextResponse } from 'next/server';
 
-// Put your Zapier hook in an env var if you want, but we also include a safe fallback.
 const ZAP_URL =
   process.env.ZAPIER_HOOK_URL ||
-  "https://hooks.zapier.com/hooks/catch/25013320/u5vmpeb/";
+  'https://hooks.zapier.com/hooks/catch/25013320/u5vmpeb/';
 
-export async function POST(req: Request) {
+export async function POST(req) {
   try {
     const data = await req.json();
 
-    // Optional: simple required checks (tweak to taste)
+    // minimal validation (tweak as you like)
     if (!data?.firstName || !data?.lastName || !data?.phone) {
       return NextResponse.json(
-        { ok: false, error: "Missing required fields (name/phone)" },
+        { ok: false, error: 'Missing required fields (name/phone)' },
         { status: 400 }
       );
     }
 
-    // Forward to Zapier
+    // forward to Zapier
     const resp = await fetch(ZAP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
 
@@ -34,9 +33,9 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
+  } catch (err) {
     return NextResponse.json(
-      { ok: false, error: err?.message ?? "Unknown server error" },
+      { ok: false, error: err?.message || 'Unknown server error' },
       { status: 500 }
     );
   }
