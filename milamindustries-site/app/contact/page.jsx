@@ -12,7 +12,7 @@ export default function ContactPage() {
   const [offerReceived, setOfferReceived] = useState('No');
 
   // UI state
-  const [status, setStatus] = useState(null); // { type: 'success' | 'error', msg: string }
+  const [status, setStatus] = useState(null); // { type: 'success'|'error', msg }
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
@@ -20,13 +20,10 @@ export default function ContactPage() {
     setStatus(null);
     setLoading(true);
 
-    // IMPORTANT: capture the form element before any await (React pools the event)
-    const formEl = e.currentTarget;
-
-    const form = new FormData(formEl);
+    const form = new FormData(e.currentTarget);
     const data = Object.fromEntries(form.entries());
 
-    // Normalize/augment for Zapier/Sheets/REISift
+    // Shape a cleaner payload (nice for Zapier/Sheets/CRMs)
     const payload = {
       ...data,
       submittedAt: new Date().toISOString(),
@@ -60,41 +57,28 @@ export default function ContactPage() {
         body: JSON.stringify(payload),
       });
 
-      let json = {};
-      try {
-        json = await res.json();
-      } catch {
-        /* ignore */
+      const json = await res.json();
+
+      if (!res.ok || !json?.ok) {
+        // Bubble up specific server error (like missing env var) to show on page
+        throw new Error(json?.error || 'Submit failed');
       }
 
-      if (!res.ok || json?.ok === false) {
-        const errMsg = json?.error || 'Submit failed';
-        throw new Error(errMsg);
-      }
-
-      const msg =
-        json?.forwarded === false
-          ? 'Thanks—got it! (Heads up: delivery to our CRM is retrying in the background.)'
-          : 'Thanks—got it! We’ll contact you shortly.';
-
-      setStatus({ type: 'success', msg });
-
-      // Use the saved reference instead of e.currentTarget
-      formEl.reset();
-      setImprovements('No');
-      setRepairs('No');
-      setMortgage('No');
-      setLiens('No');
-      setOfferReceived('No');
-
-      if (typeof window !== 'undefined') {
-        console.debug('Lead submit → API response:', {
-          ok: json?.ok,
-          forwarded: json?.forwarded,
-          upstreamStatus: json?.upstreamStatus,
-          upstreamBody: json?.upstreamBody,
+      if (json.forwarded !== true) {
+        // We accepted the form, but forwarding to Zapier failed.
+        // Still show success to user, but include small warning so you can notice.
+        setStatus({
+          type: 'success',
+          msg:
+            'Thanks—got it! We’ll contact you shortly. (Heads up: forwarding to Zapier failed; check server logs/Zapier.)',
         });
+      } else {
+        setStatus({ type: 'success', msg: 'Thanks—got it! We’ll contact you shortly.' });
       }
+
+      // Reset the form and radios
+      e.currentTarget.reset();
+      setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
     } catch (err) {
       console.error(err);
       setStatus({
@@ -151,12 +135,7 @@ export default function ContactPage() {
           </div>
 
           {/* Why sell? */}
-          <TextArea
-            label="Why Sell?"
-            name="whySell"
-            rows={4}
-            placeholder="Tell us what’s going on (optional)"
-          />
+          <TextArea label="Why Sell?" name="whySell" rows={4} placeholder="Tell us what’s going on (optional)" />
 
           {/* Property type */}
           <Select
@@ -168,34 +147,14 @@ export default function ContactPage() {
 
           {/* Beds / Baths */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Select
-              label="How many bedrooms? *"
-              name="bedrooms"
-              required
-              options={['1', '2', '3', '4', '5', '6', '7', '8+']}
-            />
-            <Select
-              label="How many bathrooms? *"
-              name="bathrooms"
-              required
-              options={['1', '2', '3', '4', '5', '6', '7', '8+']}
-            />
+            <Select label="How many bedrooms? *" name="bedrooms" required options={['1','2','3','4','5','6','7','8+']} />
+            <Select label="How many bathrooms? *" name="bathrooms" required options={['1','2','3','4','5','6','7','8+']} />
           </div>
 
           {/* Size / Year built */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field
-              label="Approx. square feet"
-              name="sqft"
-              inputMode="numeric"
-              placeholder="e.g., 1650"
-            />
-            <Field
-              label="Year the home was built"
-              name="yearBuilt"
-              inputMode="numeric"
-              placeholder="e.g., 1994"
-            />
+            <Field label="Approx. square feet" name="sqft" inputMode="numeric" placeholder="e.g., 1650" />
+            <Field label="Year the home was built" name="yearBuilt" inputMode="numeric" placeholder="e.g., 1994" />
           </div>
 
           {/* Condition / toggles with conditional notes */}
@@ -207,7 +166,6 @@ export default function ContactPage() {
             textareaName="improvementsNotes"
             placeholder="Briefly describe improvements…"
           />
-
           <YesNoWithText
             label="Any known repairs needed?"
             name="repairs"
@@ -216,7 +174,6 @@ export default function ContactPage() {
             textareaName="repairsNotes"
             placeholder="What repairs are needed?"
           />
-
           <YesNoWithText
             label="Is there a current mortgage?"
             name="mortgage"
@@ -225,7 +182,6 @@ export default function ContactPage() {
             textareaName="mortgageNotes"
             placeholder="Optional details (balance, behind, etc.)"
           />
-
           <YesNoWithText
             label="Are there any liens against the property?"
             name="liens"
@@ -234,7 +190,6 @@ export default function ContactPage() {
             textareaName="liensNotes"
             placeholder="Describe any liens…"
           />
-
           <YesNoWithText
             label="Have you already received an offer on the property?"
             name="offerReceived"
@@ -311,22 +266,9 @@ export default function ContactPage() {
           <div className="mt-6 bg-gray-900 text-white p-5 rounded-xl text-center shadow-sm">
             <p className="text-base font-semibold">Prefer to speak directly?</p>
             <p className="mt-1 text-sm">
-              <a
-                href="tel:+16788078133"
-                className="underline hover:text-gray-300"
-                aria-label="Call Milam Industries LLC now"
-              >
-                📞 Call us now
-              </a>{' '}
+              <a href="tel:+16788078133" className="underline hover:text-gray-300" aria-label="Call Milam Industries LLC now">📞 Call us now</a>{' '}
               or{' '}
-              <a
-                href="sms:+16788078133"
-                className="underline hover:text-gray-300"
-                aria-label="Text Milam Industries LLC"
-              >
-                💬 Text us
-              </a>
-              .
+              <a href="sms:+16788078133" className="underline hover:text-gray-300" aria-label="Text Milam Industries LLC">💬 Text us</a>.
             </p>
             <p className="mt-1 text-xs text-gray-300">
               Our team is available 7 days a week to answer your questions.
@@ -410,14 +352,7 @@ function Select({ label, name, options = [], required }) {
   );
 }
 
-function YesNoWithText({
-  label,
-  name,
-  value,
-  setValue,
-  textareaName,
-  placeholder,
-}) {
+function YesNoWithText({ label, name, value, setValue, textareaName, placeholder }) {
   return (
     <div>
       <span className="block text-sm text-gray-700 mb-1">{label}</span>
