@@ -7,32 +7,45 @@ const ZAP_URL =
 
 export async function POST(req) {
   try {
-    const data = await req.json();
-
-    // minimal validation (tweak as you like)
-    if (!data?.firstName || !data?.lastName || !data?.phone) {
+    // 1) Parse JSON body safely
+    let data;
+    try {
+      data = await req.json();
+    } catch {
       return NextResponse.json(
-        { ok: false, error: 'Missing required fields (name/phone)' },
+        { ok: false, error: 'Invalid JSON body' },
         { status: 400 }
       );
     }
 
-    // forward to Zapier
-    const resp = await fetch(ZAP_URL, {
+    // 2) TEMP: remove strict field requirements (we’ll re-enable later)
+    // If you want a soft check, uncomment:
+    // if (!data?.firstName || !data?.phone) {
+    //   return NextResponse.json(
+    //     { ok: false, error: 'Please include at least first name and phone' },
+    //     { status: 400 }
+    //   );
+    // }
+
+    // 3) Forward payload to Zapier
+    const upstream = await fetch(ZAP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
 
-    if (!resp.ok) {
-      const text = await resp.text();
+    const text = await upstream.text(); // read body either way
+
+    if (!upstream.ok) {
+      // Pass through upstream status + text so you see the real cause
       return NextResponse.json(
-        { ok: false, error: `Upstream error: ${text || resp.status}` },
+        { ok: false, error: `Zapier error (${upstream.status}): ${text || 'No body'}` },
         { status: 502 }
       );
     }
 
-    return NextResponse.json({ ok: true });
+    // 4) Success
+    return NextResponse.json({ ok: true, zapier: text || 'OK' });
   } catch (err) {
     return NextResponse.json(
       { ok: false, error: err?.message || 'Unknown server error' },
