@@ -15,13 +15,14 @@ export default function ContactPage() {
   const [status, setStatus] = useState(null); // { type: 'success'|'error', msg }
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit(e) {
-    e.preventDefault();
-    setStatus(null);
-    setLoading(true);
+async function onSubmit(e) {
+  e.preventDefault();
+  const formEl = e.currentTarget; // ✅ keeps the form reference safe
+  setStatus(null);
+  setLoading(true);
 
-    const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form.entries());
+  const form = new FormData(formEl);
+  const data = Object.fromEntries(form.entries());
 
     // Shape a cleaner payload (nice for Zapier/Sheets/CRMs)
     const payload = {
@@ -77,7 +78,7 @@ export default function ContactPage() {
       }
 
       // Reset the form and radios
-      e.currentTarget.reset();
+      formEl.reset(); // ✅ prevents "null is not an object" error
       setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
     } catch (err) {
       console.error(err);
