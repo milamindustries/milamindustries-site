@@ -57,17 +57,51 @@ export default function ContactPage() {
         body: JSON.stringify(payload),
       });
 
-      const json = await res.json();
-      if (!res.ok || !json?.ok) {
-        throw new Error(json?.error || 'Submit failed');
+      // Try to parse JSON even on non-2xx for helpful messages
+      let json = {};
+      try {
+        json = await res.json();
+      } catch {
+        /* ignore parse errors */
       }
 
-      setStatus({ type: 'success', msg: 'Thanks—got it! We’ll contact you shortly.' });
+      if (!res.ok || json?.ok === false) {
+        // Show a precise error if our API provided one
+        const errMsg = json?.error || 'Submit failed';
+        throw new Error(errMsg);
+      }
+
+      // Show success to the visitor *even if* Zapier forwarding was not 200
+      const msg =
+        json?.forwarded === false
+          ? 'Thanks—got it! (Heads up: delivery to our CRM is retrying in the background.)'
+          : 'Thanks—got it! We’ll contact you shortly.';
+
+      setStatus({ type: 'success', msg });
+
+      // Reset the form and radio toggle UI
       e.currentTarget.reset();
-      setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
+      setImprovements('No');
+      setRepairs('No');
+      setMortgage('No');
+      setLiens('No');
+      setOfferReceived('No');
+
+      // Optional: debug info in console so you can see upstream status if needed
+      if (typeof window !== 'undefined') {
+        console.debug('Lead submit → API response:', {
+          ok: json?.ok,
+          forwarded: json?.forwarded,
+          upstreamStatus: json?.upstreamStatus,
+          upstreamBody: json?.upstreamBody,
+        });
+      }
     } catch (err) {
       console.error(err);
-      setStatus({ type: 'error', msg: 'There was an error submitting the form. Please try again.' });
+      setStatus({
+        type: 'error',
+        msg: err?.message || 'There was an error submitting the form. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -230,7 +264,9 @@ export default function ContactPage() {
           {status && (
             <div
               className={`text-sm rounded-md p-3 ${
-                status.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+                status.type === 'success'
+                  ? 'bg-green-50 text-green-700 border border-green-200'
+                  : 'bg-red-50 text-red-700 border border-red-200'
               }`}
             >
               {status.msg}
