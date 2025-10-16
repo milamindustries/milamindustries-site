@@ -1,56 +1,57 @@
 // app/api/lead/route.js
 import { NextResponse } from 'next/server';
 
-// Force dynamic so changes take effect immediately on Vercel
+// Make sure this route always runs server-side and is never cached
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// EASIEST PATH: hardcode your Zapier Catch Hook URL here.
-// Replace the value below with YOUR real hook URL.
-const ZAP_URL = 'https://hooks.zapier.com/hooks/catch/25013320/xxxxx/';
+const ZAP_URL = process.env.ZAPIER_HOOK_URL ?? null;
+
+// Optional quick check in browser: https://YOUR_DOMAIN/api/lead
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    envHasVar: Boolean(ZAP_URL),
+  }, { headers: { 'Cache-Control': 'no-store' } });
+}
 
 export async function POST(req) {
-  if (!ZAP_URL.startsWith('https://hooks.zapier.com/')) {
+  // Parse JSON body
+  let data;
+  try {
+    data = await req.json();
+  } catch {
     return NextResponse.json(
-      { ok: false, error: 'ZAP_URL is not set to a Zapier catch hook.' },
-      { status: 500 }
+      { ok: false, error: 'Invalid JSON body' },
+      { status: 400, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 
-  try {
-    let data = {};
-    try {
-      data = await req.json();
-    } catch {
-      return NextResponse.json({ ok: false, error: 'Invalid JSON body' }, { status: 400 });
-    }
+  // Try to forward to Zapier if the env var is set.
+  // If it's missing or fails, still return ok:true so the user sees success.
+  let forwarded = false;
+  let upstreamStatus = null;
+  let upstreamBody = null;
 
-    let forwarded = false, upstreamStatus = null, upstreamBody = '';
+  if (ZAP_URL) {
     try {
       const resp = await fetch(ZAP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+        cache: 'no-store',
       });
       forwarded = resp.ok;
       upstreamStatus = resp.status;
-      upstreamBody = await resp.text();
+      upstreamBody = (await resp.text())?.slice(0, 500) || null;
     } catch (e) {
       forwarded = false;
       upstreamBody = e?.message || 'Network error sending to Zapier';
     }
-
-    // Always tell the frontend "ok" so the user sees success
-    return NextResponse.json({
-      ok: true,
-      forwarded,
-      upstreamStatus,
-      upstreamBody: upstreamBody?.slice(0, 500),
-    });
-  } catch (err) {
-    return NextResponse.json(
-      { ok: false, error: err?.message || 'Unknown server error' },
-      { status: 500 }
-    );
   }
+
+  return NextResponse.json(
+    { ok: true, forwarded, upstreamStatus, upstreamBody },
+    { headers: { 'Cache-Control': 'no-store' } }
+  );
 }
