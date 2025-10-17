@@ -15,14 +15,14 @@ export default function ContactPage() {
   const [status, setStatus] = useState(null); // { type: 'success'|'error', msg }
   const [loading, setLoading] = useState(false);
 
-async function onSubmit(e) {
-  e.preventDefault();
-  const formEl = e.currentTarget; // ✅ keeps the form reference safe
-  setStatus(null);
-  setLoading(true);
+  async function onSubmit(e) {
+    e.preventDefault();
+    const formEl = e.currentTarget; // ✅ keeps the form reference safe
+    setStatus(null);
+    setLoading(true);
 
-  const form = new FormData(formEl);
-  const data = Object.fromEntries(form.entries());
+    const form = new FormData(formEl);
+    const data = Object.fromEntries(form.entries());
 
     // Shape a cleaner payload (nice for Zapier/Sheets/CRMs)
     const payload = {
@@ -121,6 +121,9 @@ async function onSubmit(e) {
             <Field label="Email *" name="email" type="email" required />
             <Field label="Phone *" name="phone" inputMode="tel" required />
           </div>
+
+          {/* Lead Date */}
+          <Field label="Lead Date" name="leadDate" type="date" />
 
           {/* Preferred contact method */}
           <div>
