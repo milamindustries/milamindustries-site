@@ -113,7 +113,16 @@ export default function ContactPage() {
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Email *" name="email" type="email" required />
-            <Field label="Phone *" name="phone" inputMode="tel" required />
+            {/* ✅ Updated Phone field - numeric only */}
+            <Field
+              label="Phone *"
+              name="phone"
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              required
+              placeholder="Numbers only"
+            />
           </div>
 
           {/* 🗓️ Auto-filled Date */}
