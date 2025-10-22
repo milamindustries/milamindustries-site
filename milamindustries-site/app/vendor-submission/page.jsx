@@ -57,7 +57,7 @@ export default function VendorSubmissionPage() {
     };
 
     try {
-      const res = await fetch('/api/lead', {
+      const res = await fetch('/api/vendor-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
