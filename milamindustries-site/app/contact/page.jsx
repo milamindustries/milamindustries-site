@@ -95,6 +95,7 @@ export default function ContactPage() {
       </p>
 
       <div className="mt-10 grid md:grid-cols-2 gap-8">
+        {/* FORM */}
         <form onSubmit={onSubmit} className="space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
           {/* Contact details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -113,7 +114,7 @@ export default function ContactPage() {
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Email *" name="email" type="email" required />
-            {/* ✅ Updated Phone field - numeric only */}
+            {/* ✅ Numeric-only phone field */}
             <Field
               label="Phone *"
               name="phone"
@@ -185,8 +186,55 @@ export default function ContactPage() {
           <p className="text-xs text-gray-500">By submitting, you agree to be contacted by Milam Industries LLC.</p>
         </form>
 
-        {/* Sidebar contact info (unchanged) */}
-        {/* ... rest of sidebar unchanged ... */}
+        {/* ✅ Sidebar restored */}
+        <aside className="bg-white p-6 rounded-2xl border shadow-sm">
+          <h2 className="font-semibold text-lg">Talk to a team member</h2>
+          <div className="mt-3 text-sm text-gray-700 space-y-1">
+            <p><b>Phone:</b> 678-807-8133</p>
+            <p><b>Email:</b> legal@milamindustries.com</p>
+            <p><b>HQ Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell, GA 30076</p>
+          </div>
+
+          <div className="mt-6">
+            <iframe
+              title="Milam Industries HQ"
+              width="100%"
+              height="220"
+              style={{ border: 0, borderRadius: '0.75rem' }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3313.285367286422!2d-84.32251812358677!3d34.023970573167655!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f56e24eeacb06f%3A0xe15ac09e122fa05f!2s300%20Colonial%20Center%20Pkwy%20%23%20100%2C%20Roswell%2C%20GA%2030076!5e0!3m2!1sen!2sus!4v1728654170541!5m2!1sen!2sus"
+            />
+          </div>
+
+          <div className="mt-6 bg-gray-900 text-white p-5 rounded-xl text-center shadow-sm">
+            <p className="text-base font-semibold">Prefer to speak directly?</p>
+            <p className="mt-1 text-sm">
+              <a href="tel:+16788078133" className="underline hover:text-gray-300" aria-label="Call Milam Industries LLC now">📞 Call us now</a>{' '}
+              or{' '}
+              <a href="sms:+16788078133" className="underline hover:text-gray-300" aria-label="Text Milam Industries LLC">💬 Text us</a>.
+            </p>
+            <p className="mt-1 text-xs text-gray-300">
+              Our team is available 7 days a week to answer your questions.
+            </p>
+          </div>
+
+          <div className="mt-6 border-t pt-4 text-sm text-gray-600 space-y-2">
+            <p>✅ 100% confidential — your information is never shared.</p>
+            <p>🏠 We buy houses nationwide, in any condition.</p>
+            <p>🤝 Over a decade of trusted customer service and client-focused solutions.</p>
+          </div>
+
+          <div className="mt-6 bg-gray-50 p-4 rounded-xl border text-sm">
+            <p className="font-semibold text-gray-800 mb-2">How It Works</p>
+            <ol className="list-decimal list-inside space-y-1 text-gray-700">
+              <li>Submit your property details above.</li>
+              <li>Receive a cash offer within 24–48 hours.</li>
+              <li>Pick your closing date and get paid fast.</li>
+            </ol>
+          </div>
+        </aside>
       </div>
     </section>
   );
