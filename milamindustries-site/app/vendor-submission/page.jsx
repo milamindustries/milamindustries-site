@@ -28,7 +28,7 @@ export default function VendorSubmissionPage() {
     const data = Object.fromEntries(form.entries());
 
     const payload = {
-      ...data, // includes vendorInfo and leadStatus
+      ...data, // includes vendorInfo, leadStatus, notes, etc.
       submittedAt: new Date().toISOString(),
       fullName: [data.firstName, data.lastName].filter(Boolean).join(' ').trim(),
       flags: {
@@ -89,7 +89,7 @@ export default function VendorSubmissionPage() {
 
       <div className="mt-10 flex justify-center">
         <form onSubmit={onSubmit} className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
-          {/* 1) Vendor info (moved to top, replaces “How did you hear about us?”) */}
+          {/* 1) Vendor info */}
           <Select
             label="Vendor info *"
             name="vendorInfo"
@@ -219,6 +219,14 @@ export default function VendorSubmissionPage() {
             name="timeline"
             required
             options={['7–14 days', '30-60 days', '60–90 days', 'Within the next 6 months', 'No timeframe']}
+          />
+
+          {/* NEW: Notes (same size as Why Sell?) */}
+          <TextArea
+            label="Notes"
+            name="notes"
+            rows={4}
+            placeholder="Anything else worth noting (optional)"
           />
 
           {/* Status / errors */}
