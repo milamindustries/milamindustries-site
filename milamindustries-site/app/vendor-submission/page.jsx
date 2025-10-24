@@ -27,6 +27,50 @@ export default function VendorSubmissionPage() {
     const form = new FormData(formEl);
     const data = Object.fromEntries(form.entries());
 
+    // ---- NEW: handle optional MP3 upload without changing your JSON post ----
+    let audioUrl = '';
+    const audioInput = formEl.querySelector('input[name="audioFile"]');
+    const file = audioInput?.files?.[0];
+
+    try {
+      // Client-side validation (doesn't replace server validation)
+      if (file) {
+        const MAX_BYTES = 10 * 1024 * 1024; // 10MB
+        const validTypes = ['audio/mpeg', 'audio/mp3'];
+
+        if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.mp3')) {
+          throw new Error('Audio must be an .mp3 file.');
+        }
+        if (file.size > MAX_BYTES) {
+          throw new Error('Audio file must be 10MB or smaller.');
+        }
+
+        // Upload the file to a dedicated endpoint that validates and stores it.
+        const fd = new FormData();
+        fd.append('file', file);
+
+        const uploadRes = await fetch('/api/vendor-audio', {
+          method: 'POST',
+          body: fd,
+        });
+        const uploadJson = await uploadRes.json();
+
+        if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.url) {
+          throw new Error(uploadJson?.error || 'Audio upload failed.');
+        }
+        audioUrl = uploadJson.url; // to include in your normal JSON payload
+      }
+    } catch (uploadErr) {
+      console.error(uploadErr);
+      setStatus({
+        type: 'error',
+        msg: uploadErr?.message || 'Audio upload failed. Please check the file and try again.',
+      });
+      setLoading(false);
+      return; // stop submit if audio invalid/failed
+    }
+    // ------------------------------------------------------------------------
+
     const payload = {
       ...data, // includes vendorInfo, leadStatus, notes, etc.
       submittedAt: new Date().toISOString(),
@@ -54,6 +98,9 @@ export default function VendorSubmissionPage() {
       // tags to help you branch in Zapier
       leadSource: 'Vendor Submission Form',
       isVendorSubmission: true,
+
+      // NEW: include uploaded audio URL if present (does not change your Zap schema unless you map it)
+      audioUrl,
     };
 
     try {
@@ -228,6 +275,20 @@ export default function VendorSubmissionPage() {
             rows={4}
             placeholder="Anything else worth noting (optional)"
           />
+
+          {/* NEW: MP3 upload (optional, max 10MB) */}
+          <label className="block text-sm">
+            <span className="text-gray-700">Upload Audio (MP3, max 10MB)</span>
+            <input
+              className="mt-1 w-full rounded-xl border px-3 py-2 bg-white"
+              type="file"
+              name="audioFile"
+              accept=".mp3,audio/mpeg"
+            />
+            <span className="mt-1 block text-xs text-gray-500">
+              Optional. Only .mp3 files are accepted. Max size 10MB.
+            </span>
+          </label>
 
           {/* Status / errors */}
           {status && (
