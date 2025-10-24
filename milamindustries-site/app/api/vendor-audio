@@ -1,0 +1,80 @@
+// app/api/vendor-audio/route.js
+import { NextResponse } from 'next/server';
+
+export const runtime = 'nodejs'; // ensure Node runtime for file handling
+
+// 10 MB in bytes
+const MAX_BYTES = 10 * 1024 * 1024;
+const ALLOWED_MIME = new Set(['audio/mpeg', 'audio/mp3']);
+
+export async function POST(req) {
+  try {
+    // Must be multipart/form-data
+    const contentType = req.headers.get('content-type') || '';
+    if (!contentType.toLowerCase().includes('multipart/form-data')) {
+      return NextResponse.json(
+        { ok: false, error: 'Invalid content type. Use multipart/form-data.' },
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    const formData = await req.formData();
+    const file = formData.get('file');
+
+    if (!file || typeof file === 'string') {
+      return NextResponse.json(
+        { ok: false, error: 'No file received. Field name must be "file".' },
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    const filename = file.name || 'audio.mp3';
+    const mime = file.type || 'application/octet-stream';
+    const size = file.size ?? 0;
+
+    // Validate extension (defense in depth)
+    const lowerName = filename.toLowerCase();
+    const looksLikeMp3 = lowerName.endsWith('.mp3');
+    const mimeOk = ALLOWED_MIME.has(mime);
+
+    if (!looksLikeMp3 && !mimeOk) {
+      return NextResponse.json(
+        { ok: false, error: 'Audio must be an .mp3 file.' },
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    if (size > MAX_BYTES) {
+      return NextResponse.json(
+        { ok: false, error: 'Audio file must be 10MB or smaller.' },
+        { status: 413, headers: { 'Cache-Control': 'no-store' } } // 413 = payload too large
+      );
+    }
+
+    // Read file into memory
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString('base64');
+
+    // Return a data URL so the client can immediately preview/play it
+    // (This avoids changing your Zapier/JSON pipeline. If you later want
+    // persistent storage like S3 or Vercel Blob, we can swap this easily.)
+    const dataUrl = `data:audio/mpeg;base64,${base64}`;
+
+    return NextResponse.json(
+      {
+        ok: true,
+        url: dataUrl, // your page will include this in the normal JSON submit
+        filename,
+        size,
+        mime: 'audio/mpeg',
+      },
+      { status: 200, headers: { 'Cache-Control': 'no-store' } }
+    );
+  } catch (err) {
+    console.error('vendor-audio upload error:', err);
+    return NextResponse.json(
+      { ok: false, error: 'Audio upload failed. Please try again.' },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
+    );
+  }
+}
