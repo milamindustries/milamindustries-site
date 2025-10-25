@@ -1,6 +1,7 @@
 // app/api/vendor-audio/route.js
 import { NextResponse } from 'next/server';
-import { uploadToOneDrive } from '../../../lib/onedrive';
+import { uploadToOneDrive } from '../../../lib/onedrive'; // <-- relative path (no "@/")
+
 export const runtime = 'nodejs';
 
 export async function GET() {
@@ -32,8 +33,8 @@ export async function POST(req) {
       );
     }
 
-    // --- Validate file type and size ---
-    const MAX_BYTES = 10 * 1024 * 1024; // 10MB
+    // Validate MP3 (≤10MB)
+    const MAX_BYTES = 10 * 1024 * 1024;
     const validTypes = ['audio/mpeg', 'audio/mp3'];
     if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.mp3')) {
       return NextResponse.json(
@@ -48,17 +49,16 @@ export async function POST(req) {
       );
     }
 
-    // --- Upload to OneDrive ---
+    // Upload (placeholder in lib/onedrive.js returns a fake https link)
     const uploadResult = await uploadToOneDrive(file, vendorName);
-
     if (!uploadResult?.ok) {
       throw new Error(uploadResult?.error || 'OneDrive upload failed.');
     }
 
     return NextResponse.json({
       ok: true,
-      audioUrl: uploadResult.audioUrl,       // Direct OneDrive file link
-      vendorFolder: uploadResult.vendorFolder, // Folder path for reference
+      audioUrl: uploadResult.audioUrl,     // https://... (Zapier-safe)
+      vendorFolder: uploadResult.vendorFolder,
       vendorName,
     });
   } catch (err) {
