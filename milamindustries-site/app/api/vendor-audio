@@ -3,179 +3,43 @@ import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
-const MAX_BYTES = 10 * 1024 * 1024;
-const ALLOWED_MIME = new Set(['audio/mpeg', 'audio/mp3']);
-
-const GRAPH = 'https://graph.microsoft.com/v1.0';
-const TOKEN_URL = (tenant) =>
-  `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`;
-
-async function getGraphToken() {
-  const res = await fetch(TOKEN_URL(process.env.MS_TENANT_ID), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      client_id: process.env.MS_CLIENT_ID,
-      client_secret: process.env.MS_CLIENT_SECRET,
-      scope: 'https://graph.microsoft.com/.default',
-      grant_type: 'client_credentials',
-    }),
-    cache: 'no-store',
+// Health check so /api/vendor-audio in the browser returns JSON
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    route: '/api/vendor-audio',
+    accepts: 'POST multipart/form-data',
   });
-  if (!res.ok) throw new Error(`Token error ${res.status}: ${await res.text()}`);
-  return res.json();
 }
 
-function safeSegment(name) {
-  return (name || 'Unknown')
-    .replace(/[\\/:"*?<>|]+/g, '-')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 80);
-}
-
-async function ensureFolderPath(accessToken, driveId, path) {
-  const parts = path.split('/').filter(Boolean);
-  let cursorId = 'root';
-
-  for (const raw of parts) {
-    const part = safeSegment(raw);
-
-    const listRes = await fetch(
-      `${GRAPH}/drives/${driveId}/items/${cursorId}/children?$select=id,name,folder`,
-      { headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store' }
-    );
-    if (!listRes.ok) throw new Error(`List failed: ${await listRes.text()}`);
-    const list = await listRes.json();
-    const existing = (list.value || []).find((i) => i.name === part && i.folder);
-
-    if (existing) { cursorId = existing.id; continue; }
-
-    const createRes = await fetch(`${GRAPH}/drives/${driveId}/items/${cursorId}/children`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: part,
-        folder: {},
-        '@microsoft.graph.conflictBehavior': 'rename',
-      }),
-    });
-    if (!createRes.ok) throw new Error(`Create folder failed: ${await createRes.text()}`);
-    const created = await createRes.json();
-    cursorId = created.id;
-  }
-  return cursorId;
-}
-
-async function chunkedUpload(accessToken, driveId, folderPath, fileName, fileBuffer, mime) {
-  const itemPath = `${folderPath}/${fileName}`;
-  const sessRes = await fetch(
-    `${GRAPH}/drives/${driveId}/root:/${encodeURI(itemPath)}:/createUploadSession`,
-    {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ item: { '@microsoft.graph.conflictBehavior': 'replace' } }),
-    }
-  );
-  if (!sessRes.ok) throw new Error(`Create upload session failed: ${await sessRes.text()}`);
-  const session = await sessRes.json();
-
-  const CHUNK = 2 * 1024 * 1024;
-  let start = 0;
-  while (start < fileBuffer.length) {
-    const end = Math.min(start + CHUNK, fileBuffer.length);
-    const chunk = fileBuffer.subarray(start, end);
-    const put = await fetch(session.uploadUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Length': String(chunk.length),
-        'Content-Range': `bytes ${start}-${end - 1}/${fileBuffer.length}`,
-        'Content-Type': mime,
-      },
-      body: chunk,
-    });
-    if (!put.ok && put.status !== 202) {
-      throw new Error(`Chunk failed ${put.status}: ${await put.text()}`);
-    }
-    if (put.status === 200 || put.status === 201) {
-      return put.json(); // final DriveItem
-    }
-    start = end;
-  }
-  throw new Error('Upload finished without final item');
-}
-
-async function createAnonViewLink(accessToken, driveId, itemId) {
-  const res = await fetch(`${GRAPH}/drives/${driveId}/items/${itemId}/createLink`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type: 'view', scope: 'anonymous' }),
-  });
-  if (!res.ok) throw new Error(`Create link failed: ${await res.text()}`);
-  const data = await res.json();
-  return data?.link?.webUrl || null;
-}
-
+// Minimal POST (stub). Returns a fake https link so your front-end and Zap can proceed.
+// Once this returns 200 OK for you, we’ll replace with your OneDrive upload code.
 export async function POST(req) {
   try {
-    const contentType = req.headers.get('content-type') || '';
-    if (!contentType.toLowerCase().includes('multipart/form-data')) {
-      return NextResponse.json({ ok:false, error:'Use multipart/form-data.' }, { status:400 });
+    const ct = (req.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('multipart/form-data')) {
+      return NextResponse.json({ ok: false, error: 'Use multipart/form-data.' }, { status: 400 });
     }
 
     const form = await req.formData();
     const file = form.get('file');
-    const vendorNameInput = form.get('vendorName') || form.get('vendor') || form.get('name');
+    const vendorName = (form.get('vendorName') || 'Unknown Vendor').toString();
 
     if (!file || typeof file === 'string') {
-      return NextResponse.json({ ok:false, error:'No file. Field name must be "file".' }, { status:400 });
+      return NextResponse.json({ ok: false, error: 'No file (field must be "file").' }, { status: 400 });
     }
 
-    const name = file.name || 'audio.mp3';
-    const mime = file.type || 'application/octet-stream';
-    const size = file.size ?? 0;
-
-    const looksLikeMp3 = (name.toLowerCase().endsWith('.mp3'));
-    const mimeOk = ALLOWED_MIME.has(mime);
-    if (!looksLikeMp3 && !mimeOk) {
-      return NextResponse.json({ ok:false, error:'Only .mp3 allowed.' }, { status:400 });
-    }
-    if (size > MAX_BYTES) {
-      return NextResponse.json({ ok:false, error:'Max 10MB.' }, { status:413 });
-    }
-
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    const { access_token } = await getGraphToken();
-
-    const now = new Date();
-    const yyyy = now.getFullYear();
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const base = process.env.ONEDRIVE_BASE_FOLDER || 'Vendors';
-    const vendorName = safeSegment(vendorNameInput || 'Unknown Vendor');
-    const folderPath = `${safeSegment(base)}/${vendorName}/Recordings/${yyyy}-${mm}`;
-
-    await ensureFolderPath(access_token, process.env.ONEDRIVE_DRIVE_ID, folderPath);
-
-    const ts = `${yyyy}${mm}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
-    const finalName = looksLikeMp3 ? name.toLowerCase().replace(/\s+/g,'-') : `${vendorName}-${ts}.mp3`;
-
-    const item = await chunkedUpload(access_token, process.env.ONEDRIVE_DRIVE_ID, folderPath, finalName, bytes, 'audio/mpeg');
-
-    let publicUrl = null;
-    try { publicUrl = await createAnonViewLink(access_token, process.env.ONEDRIVE_DRIVE_ID, item.id); } catch { /* orgs may block anon links */ }
+    const filename = file.name || 'audio.mp3';
+    const audioUrl = `https://example.com/fake/${encodeURIComponent(filename)}`; // placeholder
 
     return NextResponse.json({
       ok: true,
-      audioUrl: publicUrl || item.webUrl, // https only
-      vendorFolder: folderPath,
+      audioUrl,
+      vendorFolder: `Vendors/${vendorName}/Recordings/test`,
       vendorName,
-      file: { id: item.id, name: item.name, webUrl: item.webUrl }
     });
   } catch (e) {
-    console.error('vendor-audio error:', e);
-    return NextResponse.json({ ok:false, error:'Audio upload failed.' }, { status:500 });
+    console.error('vendor-audio stub error:', e);
+    return NextResponse.json({ ok: false, error: 'Upload failed' }, { status: 500 });
   }
 }
