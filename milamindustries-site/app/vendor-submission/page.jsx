@@ -52,7 +52,8 @@ export default function VendorSubmissionPage() {
         .replace(/\s+/g, ' ')
         .trim();
 
-    // Optional MP3 upload -> OneDrive
+    // Optional MP3 upload -> (TEMP) /api/hello, returns a fake https link to prove wiring.
+    // Once this is 200 OK, we’ll swap the server to real OneDrive upload.
     let audioUrl = '';
     let onedriveFolder = '';
     const audioInput = formEl.querySelector('input[name="audioFile"]');
@@ -73,15 +74,27 @@ export default function VendorSubmissionPage() {
         fd.append('file', file);
         fd.append('vendorName', vendorName); // <-- important!
 
-        const uploadRes = await fetch('/api/vendor-audio', { method: 'POST', body: fd });
-        const uploadJson = await uploadRes.json();
+        // TEMP endpoint (known to exist): /api/hello
+        const uploadRes = await fetch('/api/hello', { method: 'POST', body: fd });
 
-        if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.audioUrl) {
-          throw new Error(uploadJson?.error || 'Audio upload failed.');
+        // Be robust to non-JSON responses (e.g., 404/405 HTML)
+        let uploadJson = null;
+        try {
+          uploadJson = await uploadRes.json();
+        } catch (parseErr) {
+          const text = await uploadRes.text();
+          throw new Error(
+            `Audio upload failed (status ${uploadRes.status}). ${text || 'Non-JSON response from /api/hello.'}`
+          );
         }
 
-        audioUrl = uploadJson.audioUrl;              // https:// link
+        if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.audioUrl) {
+          throw new Error(uploadJson?.error || `Audio upload failed (status ${uploadRes.status}).`);
+        }
+
+        audioUrl = uploadJson.audioUrl;              // https:// link (Zap-safe)
         onedriveFolder = uploadJson.vendorFolder || '';
+        console.log('upload OK:', uploadJson);       // keep for debugging
       }
     } catch (uploadErr) {
       console.error(uploadErr);
@@ -132,8 +145,27 @@ export default function VendorSubmissionPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const json = await res.json();
-      if (!res.ok || !json?.ok) throw new Error(json?.error || 'There was an error submitting the form.');
+
+      // Show exact server message even if body isn't JSON
+      let json = null;
+      try {
+        json = await res.json();
+      } catch (parseErr) {
+        const text = await res.text();
+        throw new Error(`Submit failed (status ${res.status}). ${text || 'Non-JSON response.'}`);
+      }
+
+      if (!json?.ok) {
+        setStatus({
+          type: 'error',
+          msg: json?.error
+            ? String(json.error)
+            : `Submit failed (${json.where || 'unknown'}${json.status ? ` ${json.status}` : ''})`,
+        });
+        console.log('vendor-lead response:', json);
+        setLoading(false);
+        return;
+      }
 
       setStatus({ type: 'success', msg: 'Thanks—submitted successfully.' });
       formEl.reset();
