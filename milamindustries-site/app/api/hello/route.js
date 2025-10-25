@@ -1,6 +1,6 @@
 // app/api/hello/route.js
 import { NextResponse } from 'next/server';
-import { uploadToOneDrive } from '@/lib/onedrive'; // your helper
+import { uploadToOneDrive } from '../../../lib/onedrive';
 export const runtime = 'nodejs';
 
 // Health check
