@@ -52,8 +52,7 @@ export default function VendorSubmissionPage() {
         .replace(/\s+/g, ' ')
         .trim();
 
-    // Optional MP3 upload -> (TEMP) /api/hello, returns a fake https link to prove wiring.
-    // Once this is 200 OK, we’ll swap the server to real OneDrive upload.
+    // Optional MP3 upload -> /api/audio
     let audioUrl = '';
     let onedriveFolder = '';
     const audioInput = formEl.querySelector('input[name="audioFile"]');
@@ -74,8 +73,7 @@ export default function VendorSubmissionPage() {
         fd.append('file', file);
         fd.append('vendorName', vendorName); // <-- important!
 
-        // TEMP endpoint (known to exist): /api/hello
-        const uploadRes = await fetch('/api/hello', { method: 'POST', body: fd });
+        const uploadRes = await fetch('/api/audio', { method: 'POST', body: fd });
 
         // Be robust to non-JSON responses (e.g., 404/405 HTML)
         let uploadJson = null;
@@ -84,7 +82,7 @@ export default function VendorSubmissionPage() {
         } catch (parseErr) {
           const text = await uploadRes.text();
           throw new Error(
-            `Audio upload failed (status ${uploadRes.status}). ${text || 'Non-JSON response from /api/hello.'}`
+            `Audio upload failed (status ${uploadRes.status}). ${text || 'Non-JSON response from /api/audio.'}`
           );
         }
 
@@ -92,9 +90,9 @@ export default function VendorSubmissionPage() {
           throw new Error(uploadJson?.error || `Audio upload failed (status ${uploadRes.status}).`);
         }
 
-        audioUrl = uploadJson.audioUrl;              // https:// link (Zap-safe)
+        audioUrl = uploadJson.audioUrl;              // https:// link (Zap/CRM-safe)
         onedriveFolder = uploadJson.vendorFolder || '';
-        console.log('upload OK:', uploadJson);       // keep for debugging
+        console.log('upload OK:', uploadJson);
       }
     } catch (uploadErr) {
       console.error(uploadErr);
