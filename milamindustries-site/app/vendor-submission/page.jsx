@@ -71,7 +71,7 @@ export default function VendorSubmissionPage() {
 
         const fd = new FormData();
         fd.append('file', file);
-        fd.append('vendorName', vendorName); // <-- important!
+        fd.append('vendorName', vendorName); // <-- important
 
         const uploadRes = await fetch('/api/audio', { method: 'POST', body: fd });
 
@@ -79,7 +79,7 @@ export default function VendorSubmissionPage() {
         let uploadJson = null;
         try {
           uploadJson = await uploadRes.json();
-        } catch (parseErr) {
+        } catch {
           const text = await uploadRes.text();
           throw new Error(
             `Audio upload failed (status ${uploadRes.status}). ${text || 'Non-JSON response from /api/audio.'}`
@@ -90,7 +90,7 @@ export default function VendorSubmissionPage() {
           throw new Error(uploadJson?.error || `Audio upload failed (status ${uploadRes.status}).`);
         }
 
-        audioUrl = uploadJson.audioUrl;              // https:// link (Zap/CRM-safe)
+        audioUrl = uploadJson.audioUrl;            // https:// link (Zap/CRM-safe)
         onedriveFolder = uploadJson.vendorFolder || '';
         console.log('upload OK:', uploadJson);
       }
@@ -133,8 +133,8 @@ export default function VendorSubmissionPage() {
       },
       leadSource: 'Vendor Submission Form',
       isVendorSubmission: true,
-      ...(audioUrl ? { audioUrl } : {}),               // only include if present
-      ...(onedriveFolder ? { onedriveFolder } : {}),   // optional for Zapier/CRM
+      ...(audioUrl ? { audioUrl } : {}),             // only include if present
+      ...(onedriveFolder ? { onedriveFolder } : {}), // optional for Zapier/CRM
     };
 
     try {
@@ -148,7 +148,7 @@ export default function VendorSubmissionPage() {
       let json = null;
       try {
         json = await res.json();
-      } catch (parseErr) {
+      } catch {
         const text = await res.text();
         throw new Error(`Submit failed (status ${res.status}). ${text || 'Non-JSON response.'}`);
       }
