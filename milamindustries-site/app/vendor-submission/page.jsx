@@ -135,7 +135,12 @@ export default function VendorSubmissionPage() {
       </h1>
 
       <div className="mt-10 flex justify-center">
-        <form onSubmit={onSubmit} className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
+        {/* IMPORTANT: encType added so files actually submit */}
+        <form
+          onSubmit={onSubmit}
+          className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm"
+          encType="multipart/form-data"
+        >
           {/* 1) Vendor info */}
           <Select
             label="Vendor info *"
@@ -169,14 +174,14 @@ export default function VendorSubmissionPage() {
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Email *" name="email" type="email" required />
+            {/* RELAXED: removed strict numeric pattern; use tel keypad */}
             <Field
               label="Phone *"
               name="phone"
               type="tel"
-              inputMode="numeric"
-              pattern="[0-9]*"
+              inputMode="tel"
               required
-              placeholder="Numbers only"
+              placeholder="e.g., 229-269-7508"
             />
           </div>
 
