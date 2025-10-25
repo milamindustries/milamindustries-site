@@ -1,14 +1,13 @@
 // app/api/hello/route.js
 import { NextResponse } from 'next/server';
+import { uploadToOneDrive } from '@/lib/onedrive'; // your helper
 export const runtime = 'nodejs';
 
-// GET health check (already working)
+// Health check
 export async function GET() {
   return NextResponse.json({ ok: true, route: '/api/hello', accepts: 'POST multipart/form-data' });
 }
 
-// TEMPORARY: POST stub for audio upload (so we can verify end-to-end wiring)
-// It just returns a fake https URL; once this works we’ll paste in the OneDrive code.
 export async function POST(req) {
   try {
     const ct = (req.headers.get('content-type') || '').toLowerCase();
@@ -24,17 +23,34 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: 'No file (field must be "file").' }, { status: 400 });
     }
 
-    const filename = file.name || 'audio.mp3';
-    const audioUrl = `https://example.com/fake/${encodeURIComponent(filename)}`; // placeholder https link
+    // Validate MP3
+    const MAX_BYTES = 10 * 1024 * 1024;
+    const validTypes = ['audio/mpeg', 'audio/mp3'];
+    if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.mp3')) {
+      return NextResponse.json({ ok: false, error: 'Audio must be an .mp3 file.' }, { status: 400 });
+    }
+    if (file.size > MAX_BYTES) {
+      return NextResponse.json({ ok: false, error: 'Audio file must be 10MB or smaller.' }, { status: 400 });
+    }
+
+    // If your helper expects a Buffer, uncomment these two lines and pass buffer, otherwise pass file directly.
+    // const arrayBuffer = await file.arrayBuffer();
+    // const uploadResult = await uploadToOneDrive({ name: file.name, type: file.type, buffer: Buffer.from(arrayBuffer) }, vendorName);
+
+    const uploadResult = await uploadToOneDrive(file, vendorName);
+
+    if (!uploadResult?.ok) {
+      throw new Error(uploadResult?.error || 'OneDrive upload failed.');
+    }
 
     return NextResponse.json({
       ok: true,
-      audioUrl,
-      vendorFolder: `Vendors/${vendorName}/Recordings/test`,
+      audioUrl: uploadResult.audioUrl,
+      vendorFolder: uploadResult.vendorFolder,
       vendorName,
     });
-  } catch (e) {
-    console.error('hello POST stub error:', e);
-    return NextResponse.json({ ok: false, error: 'Upload failed' }, { status: 500 });
+  } catch (err) {
+    console.error('hello uploader error:', err);
+    return NextResponse.json({ ok: false, error: err.message || 'Upload failed.' }, { status: 500 });
   }
 }
