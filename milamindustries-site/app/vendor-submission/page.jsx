@@ -69,8 +69,13 @@ export default function VendorSubmissionPage() {
     }
     // --------------------------------
 
+    // Normalize phone to digits only so it won’t trip any patterns downstream
+    const phoneRaw = data.phone || '';
+    const normalizedPhone = phoneRaw.replace(/\D+/g, '');
+
     const payload = {
       ...data,
+      phone: normalizedPhone, // normalized
       submittedAt: new Date().toISOString(),
       fullName: [data.firstName, data.lastName].filter(Boolean).join(' ').trim(),
       flags: {
@@ -95,7 +100,7 @@ export default function VendorSubmissionPage() {
       },
       leadSource: 'Vendor Submission Form',
       isVendorSubmission: true,
-      audioUrl,
+      audioUrl, // may be empty string if no upload
     };
 
     try {
@@ -169,9 +174,9 @@ export default function VendorSubmissionPage() {
               name="phone"
               type="tel"
               inputMode="tel"
-              autoComplete="tel"
               required
-              placeholder="(229) 269-7508"
+              placeholder="e.g., 5551234567"
+              autoComplete="tel"
             />
           </div>
 
@@ -316,17 +321,7 @@ export default function VendorSubmissionPage() {
 }
 
 /* ---------- Small form primitives ---------- */
-function Field({
-  label,
-  name,
-  type = 'text',
-  required,
-  inputMode,
-  placeholder,
-  defaultValue,
-  autoComplete,
-  ...rest
-}) {
+function Field({ label, name, type = 'text', required, inputMode, placeholder, defaultValue, autoComplete }) {
   return (
     <label className="block text-sm">
       <span className="text-gray-700">{label}</span>
@@ -339,7 +334,6 @@ function Field({
         placeholder={placeholder}
         defaultValue={defaultValue}
         autoComplete={autoComplete}
-        {...rest}
       />
     </label>
   );
