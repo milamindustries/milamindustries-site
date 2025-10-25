@@ -27,13 +27,12 @@ export default function VendorSubmissionPage() {
     const form = new FormData(formEl);
     const data = Object.fromEntries(form.entries());
 
-    // ---- NEW: handle optional MP3 upload without changing your JSON post ----
+    // ---- MP3 upload (optional) ----
     let audioUrl = '';
     const audioInput = formEl.querySelector('input[name="audioFile"]');
     const file = audioInput?.files?.[0];
 
     try {
-      // Client-side validation (doesn't replace server validation)
       if (file) {
         const MAX_BYTES = 10 * 1024 * 1024; // 10MB
         const validTypes = ['audio/mpeg', 'audio/mp3'];
@@ -45,7 +44,6 @@ export default function VendorSubmissionPage() {
           throw new Error('Audio file must be 10MB or smaller.');
         }
 
-        // Upload the file to a dedicated endpoint that validates and stores it.
         const fd = new FormData();
         fd.append('file', file);
 
@@ -58,7 +56,7 @@ export default function VendorSubmissionPage() {
         if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.url) {
           throw new Error(uploadJson?.error || 'Audio upload failed.');
         }
-        audioUrl = uploadJson.url; // to include in your normal JSON payload
+        audioUrl = uploadJson.url;
       }
     } catch (uploadErr) {
       console.error(uploadErr);
@@ -67,12 +65,12 @@ export default function VendorSubmissionPage() {
         msg: uploadErr?.message || 'Audio upload failed. Please check the file and try again.',
       });
       setLoading(false);
-      return; // stop submit if audio invalid/failed
+      return;
     }
-    // ------------------------------------------------------------------------
+    // --------------------------------
 
     const payload = {
-      ...data, // includes vendorInfo, leadStatus, notes, etc.
+      ...data,
       submittedAt: new Date().toISOString(),
       fullName: [data.firstName, data.lastName].filter(Boolean).join(' ').trim(),
       flags: {
@@ -95,11 +93,8 @@ export default function VendorSubmissionPage() {
         sqFt: data.sqft || '',
         yearBuilt: data.yearBuilt || '',
       },
-      // tags to help you branch in Zapier
       leadSource: 'Vendor Submission Form',
       isVendorSubmission: true,
-
-      // NEW: include uploaded audio URL if present (does not change your Zap schema unless you map it)
       audioUrl,
     };
 
@@ -135,12 +130,7 @@ export default function VendorSubmissionPage() {
       </h1>
 
       <div className="mt-10 flex justify-center">
-        {/* IMPORTANT: encType added so files actually submit */}
-        <form
-          onSubmit={onSubmit}
-          className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm"
-          encType="multipart/form-data"
-        >
+        <form onSubmit={onSubmit} className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
           {/* 1) Vendor info */}
           <Select
             label="Vendor info *"
@@ -174,14 +164,14 @@ export default function VendorSubmissionPage() {
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Email *" name="email" type="email" required />
-            {/* RELAXED: removed strict numeric pattern; use tel keypad */}
             <Field
               label="Phone *"
               name="phone"
               type="tel"
               inputMode="tel"
+              autoComplete="tel"
               required
-              placeholder="e.g., 229-269-7508"
+              placeholder="(229) 269-7508"
             />
           </div>
 
@@ -273,7 +263,7 @@ export default function VendorSubmissionPage() {
             options={['7–14 days', '30-60 days', '60–90 days', 'Within the next 6 months', 'No timeframe']}
           />
 
-          {/* NEW: Notes (same size as Why Sell?) */}
+          {/* Notes */}
           <TextArea
             label="Notes"
             name="notes"
@@ -281,7 +271,7 @@ export default function VendorSubmissionPage() {
             placeholder="Anything else worth noting (optional)"
           />
 
-          {/* NEW: MP3 upload (optional, max 10MB) */}
+          {/* MP3 upload */}
           <label className="block text-sm">
             <span className="text-gray-700">Upload Audio (MP3, max 10MB)</span>
             <input
@@ -326,7 +316,17 @@ export default function VendorSubmissionPage() {
 }
 
 /* ---------- Small form primitives ---------- */
-function Field({ label, name, type = 'text', required, inputMode, placeholder, defaultValue }) {
+function Field({
+  label,
+  name,
+  type = 'text',
+  required,
+  inputMode,
+  placeholder,
+  defaultValue,
+  autoComplete,
+  ...rest
+}) {
   return (
     <label className="block text-sm">
       <span className="text-gray-700">{label}</span>
@@ -338,6 +338,8 @@ function Field({ label, name, type = 'text', required, inputMode, placeholder, d
         inputMode={inputMode}
         placeholder={placeholder}
         defaultValue={defaultValue}
+        autoComplete={autoComplete}
+        {...rest}
       />
     </label>
   );
