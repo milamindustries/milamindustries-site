@@ -18,12 +18,11 @@ export default function VendorSubmissionPage() {
   const today = new Date().toISOString().split('T')[0];
 
   async function onSubmit(e) {
-    e.preventDefault(); // we control validation in JS
+    e.preventDefault();
     const formEl = e.currentTarget;
     setStatus(null);
 
-    // ---- Debug: show first invalid field if any native constraint fails ----
-    // (Because we use noValidate, this will only run if another attribute like required is missing)
+    // Basic validity pass (since we use noValidate)
     const controls = Array.from(formEl.elements || []).filter(
       (el) => el instanceof HTMLElement && 'checkValidity' in el
     );
@@ -35,21 +34,27 @@ export default function VendorSubmissionPage() {
         // @ts-ignore
         const msg = el.validationMessage || 'This field is invalid.';
         setStatus({ type: 'error', msg: `${name}: ${msg}` });
-        // visually focus the offender
         // @ts-ignore
         el.focus?.();
         return;
       }
     }
-    // -----------------------------------------------------------------------
 
     setLoading(true);
 
     const form = new FormData(formEl);
     const data = Object.fromEntries(form.entries());
 
-    // Optional MP3 upload
+    // Compute a vendorName for OneDrive foldering:
+    // Prefer the "Vendor info" selection; otherwise fall back to "FirstName LastName".
+    const vendorName =
+      String((data.vendorInfo || `${data.firstName || ''} ${data.lastName || ''}`) || 'Unknown Vendor')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    // Optional MP3 upload -> OneDrive
     let audioUrl = '';
+    let onedriveFolder = '';
     const audioInput = formEl.querySelector('input[name="audioFile"]');
     const file = audioInput?.files?.[0];
 
@@ -66,13 +71,17 @@ export default function VendorSubmissionPage() {
 
         const fd = new FormData();
         fd.append('file', file);
+        fd.append('vendorName', vendorName); // <-- important!
 
         const uploadRes = await fetch('/api/vendor-audio', { method: 'POST', body: fd });
         const uploadJson = await uploadRes.json();
-        if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.url) {
+
+        if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.audioUrl) {
           throw new Error(uploadJson?.error || 'Audio upload failed.');
         }
-        audioUrl = uploadJson.url;
+
+        audioUrl = uploadJson.audioUrl;              // https:// link
+        onedriveFolder = uploadJson.vendorFolder || '';
       }
     } catch (uploadErr) {
       console.error(uploadErr);
@@ -81,7 +90,7 @@ export default function VendorSubmissionPage() {
       return;
     }
 
-    // Normalize phone to digits only (avoid any pattern issues downstream)
+    // Normalize phone to digits only
     const phoneRaw = data.phone || '';
     const normalizedPhone = String(phoneRaw).replace(/\D+/g, '');
 
@@ -90,6 +99,7 @@ export default function VendorSubmissionPage() {
       phone: normalizedPhone,
       submittedAt: new Date().toISOString(),
       fullName: [data.firstName, data.lastName].filter(Boolean).join(' ').trim(),
+      vendorName, // helpful in Zapier & CRM
       flags: {
         improvements: { value: data.improvements === 'Yes', notes: data.improvementsNotes || '' },
         repairs: { value: data.repairs === 'Yes', notes: data.repairsNotes || '' },
@@ -112,7 +122,8 @@ export default function VendorSubmissionPage() {
       },
       leadSource: 'Vendor Submission Form',
       isVendorSubmission: true,
-      audioUrl,
+      ...(audioUrl ? { audioUrl } : {}),               // only include if present
+      ...(onedriveFolder ? { onedriveFolder } : {}),   // optional for Zapier/CRM
     };
 
     try {
@@ -122,7 +133,7 @@ export default function VendorSubmissionPage() {
         body: JSON.stringify(payload),
       });
       const json = await res.json();
-      if (!res.ok || !json?.ok) throw new Error(json?.error || 'Submit failed');
+      if (!res.ok || !json?.ok) throw new Error(json?.error || 'There was an error submitting the form.');
 
       setStatus({ type: 'success', msg: 'Thanks—submitted successfully.' });
       formEl.reset();
@@ -142,7 +153,6 @@ export default function VendorSubmissionPage() {
       </h1>
 
       <div className="mt-10 flex justify-center">
-        {/* IMPORTANT: disable native browser validation */}
         <form noValidate onSubmit={onSubmit} className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
           {/* 1) Vendor info */}
           <Select label="Vendor info *" name="vendorInfo" required options={['LeadBanc', 'No Accent Callers', 'Pineapple', 'REVA']} />
@@ -175,7 +185,6 @@ export default function VendorSubmissionPage() {
               required
               placeholder="e.g., 5551234567"
               autoComplete="tel"
-              // NOTE: no pattern prop here!
             />
           </div>
 
