@@ -2,12 +2,10 @@
 import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 
-// Simple health check
 export async function GET() {
   return NextResponse.json({ ok: true, route: '/api/vendor-audio', accepts: 'POST multipart/form-data' });
 }
 
-// Minimal POST that doesn't import anything (so it always compiles)
 export async function POST(req) {
   try {
     const ct = (req.headers.get('content-type') || '').toLowerCase();
@@ -23,7 +21,6 @@ export async function POST(req) {
       return NextResponse.json({ ok: false, error: 'No file (field must be "file").' }, { status: 400 });
     }
 
-    // Temporary fake URL so the endpoint returns success
     const filename = file.name || 'audio.mp3';
     const audioUrl = `https://example.com/fake/${encodeURIComponent(filename)}`;
 
