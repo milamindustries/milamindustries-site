@@ -1,9 +1,8 @@
 // app/api/vendor-audio/route.js
 import { NextResponse } from 'next/server';
 
-export const runtime = 'nodejs'; // ensure Node runtime for file handling
+export const runtime = 'nodejs';
 
-// 10 MB in bytes
 const MAX_BYTES = 10 * 1024 * 1024;
 const ALLOWED_MIME = new Set(['audio/mpeg', 'audio/mp3']);
 
@@ -23,44 +22,35 @@ async function getGraphToken() {
     }),
     cache: 'no-store',
   });
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error(`Token error ${res.status}: ${t}`);
-  }
+  if (!res.ok) throw new Error(`Token error ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
 function safeSegment(name) {
   return (name || 'Unknown')
-    .replace(/[\\/:"*?<>|]+/g, '-') // remove illegal path chars
+    .replace(/[\\/:"*?<>|]+/g, '-')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 80);
 }
 
 async function ensureFolderPath(accessToken, driveId, path) {
-  // Incrementally create: Vendors/VendorName/Recordings/YYYY-MM
   const parts = path.split('/').filter(Boolean);
   let cursorId = 'root';
 
   for (const raw of parts) {
     const part = safeSegment(raw);
 
-    // List current children
     const listRes = await fetch(
       `${GRAPH}/drives/${driveId}/items/${cursorId}/children?$select=id,name,folder`,
       { headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store' }
     );
-    if (!listRes.ok) throw new Error(`List children failed: ${await listRes.text()}`);
+    if (!listRes.ok) throw new Error(`List failed: ${await listRes.text()}`);
     const list = await listRes.json();
     const existing = (list.value || []).find((i) => i.name === part && i.folder);
 
-    if (existing) {
-      cursorId = existing.id;
-      continue;
-    }
+    if (existing) { cursorId = existing.id; continue; }
 
-    // Create folder
     const createRes = await fetch(`${GRAPH}/drives/${driveId}/items/${cursorId}/children`, {
       method: 'POST',
       headers: {
@@ -77,11 +67,10 @@ async function ensureFolderPath(accessToken, driveId, path) {
     const created = await createRes.json();
     cursorId = created.id;
   }
-  return cursorId; // itemId of the final folder
+  return cursorId;
 }
 
-async function chunkedUpload(accessToken, driveId, folderPath, fileName, fileBuffer, mime = 'audio/mpeg') {
-  // Create upload session at full path (folders must already exist)
+async function chunkedUpload(accessToken, driveId, folderPath, fileName, fileBuffer, mime) {
   const itemPath = `${folderPath}/${fileName}`;
   const sessRes = await fetch(
     `${GRAPH}/drives/${driveId}/root:/${encodeURI(itemPath)}:/createUploadSession`,
@@ -94,7 +83,7 @@ async function chunkedUpload(accessToken, driveId, folderPath, fileName, fileBuf
   if (!sessRes.ok) throw new Error(`Create upload session failed: ${await sessRes.text()}`);
   const session = await sessRes.json();
 
-  const CHUNK = 2 * 1024 * 1024; // 2MB
+  const CHUNK = 2 * 1024 * 1024;
   let start = 0;
   while (start < fileBuffer.length) {
     const end = Math.min(start + CHUNK, fileBuffer.length);
@@ -109,19 +98,17 @@ async function chunkedUpload(accessToken, driveId, folderPath, fileName, fileBuf
       body: chunk,
     });
     if (!put.ok && put.status !== 202) {
-      throw new Error(`Chunk upload failed ${put.status}: ${await put.text()}`);
+      throw new Error(`Chunk failed ${put.status}: ${await put.text()}`);
     }
     if (put.status === 200 || put.status === 201) {
-      // Final response returns the DriveItem
-      return put.json();
+      return put.json(); // final DriveItem
     }
     start = end;
   }
-  throw new Error('Upload session ended unexpectedly without final item');
+  throw new Error('Upload finished without final item');
 }
 
 async function createAnonViewLink(accessToken, driveId, itemId) {
-  // Optional: requires tenant policy allowing anonymous links
   const res = await fetch(`${GRAPH}/drives/${driveId}/items/${itemId}/createLink`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
@@ -134,13 +121,9 @@ async function createAnonViewLink(accessToken, driveId, itemId) {
 
 export async function POST(req) {
   try {
-    // Must be multipart/form-data
     const contentType = req.headers.get('content-type') || '';
     if (!contentType.toLowerCase().includes('multipart/form-data')) {
-      return NextResponse.json(
-        { ok: false, error: 'Invalid content type. Use multipart/form-data.' },
-        { status: 400, headers: { 'Cache-Control': 'no-store' } }
-      );
+      return NextResponse.json({ ok:false, error:'Use multipart/form-data.' }, { status:400 });
     }
 
     const form = await req.formData();
@@ -148,92 +131,51 @@ export async function POST(req) {
     const vendorNameInput = form.get('vendorName') || form.get('vendor') || form.get('name');
 
     if (!file || typeof file === 'string') {
-      return NextResponse.json(
-        { ok: false, error: 'No file received. Field name must be "file".' },
-        { status: 400, headers: { 'Cache-Control': 'no-store' } }
-      );
+      return NextResponse.json({ ok:false, error:'No file. Field name must be "file".' }, { status:400 });
     }
 
-    const filename = file.name || 'audio.mp3';
+    const name = file.name || 'audio.mp3';
     const mime = file.type || 'application/octet-stream';
     const size = file.size ?? 0;
 
-    const lowerName = filename.toLowerCase();
-    const looksLikeMp3 = lowerName.endsWith('.mp3');
+    const looksLikeMp3 = (name.toLowerCase().endsWith('.mp3'));
     const mimeOk = ALLOWED_MIME.has(mime);
-
     if (!looksLikeMp3 && !mimeOk) {
-      return NextResponse.json(
-        { ok: false, error: 'Audio must be an .mp3 file.' },
-        { status: 400, headers: { 'Cache-Control': 'no-store' } }
-      );
+      return NextResponse.json({ ok:false, error:'Only .mp3 allowed.' }, { status:400 });
     }
-
     if (size > MAX_BYTES) {
-      return NextResponse.json(
-        { ok: false, error: 'Audio file must be 10MB or smaller.' },
-        { status: 413, headers: { 'Cache-Control': 'no-store' } } // 413 = payload too large
-      );
+      return NextResponse.json({ ok:false, error:'Max 10MB.' }, { status:413 });
     }
 
     const bytes = new Uint8Array(await file.arrayBuffer());
-
-    // Auth for Microsoft Graph
     const { access_token } = await getGraphToken();
 
-    // Build folder path: Vendors/<VendorName>/Recordings/YYYY-MM
     const now = new Date();
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
-
-    const baseRoot = process.env.ONEDRIVE_BASE_FOLDER || 'Vendors';
+    const base = process.env.ONEDRIVE_BASE_FOLDER || 'Vendors';
     const vendorName = safeSegment(vendorNameInput || 'Unknown Vendor');
-    const folderPath = `${safeSegment(baseRoot)}/${vendorName}/Recordings/${yyyy}-${mm}`;
+    const folderPath = `${safeSegment(base)}/${vendorName}/Recordings/${yyyy}-${mm}`;
 
-    // Ensure folder chain exists
     await ensureFolderPath(access_token, process.env.ONEDRIVE_DRIVE_ID, folderPath);
 
-    // File name: <VendorName>-YYYYMMDD-HHMMSS.mp3
-    const ts =
-      `${yyyy}${mm}${String(now.getDate()).padStart(2, '0')}-` +
-      `${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
-    const cleanBase = safeSegment(vendorName) || 'recording';
-    const finalName = (looksLikeMp3 ? lowerName : `${cleanBase}-${ts}.mp3`).replace(/\s+/g, '-');
+    const ts = `${yyyy}${mm}${String(now.getDate()).padStart(2,'0')}-${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}${String(now.getSeconds()).padStart(2,'0')}`;
+    const finalName = looksLikeMp3 ? name.toLowerCase().replace(/\s+/g,'-') : `${vendorName}-${ts}.mp3`;
 
-    // Upload to OneDrive (chunked)
-    const item = await chunkedUpload(
-      access_token,
-      process.env.ONEDRIVE_DRIVE_ID,
-      folderPath,
-      finalName,
-      bytes,
-      'audio/mpeg'
-    );
+    const item = await chunkedUpload(access_token, process.env.ONEDRIVE_DRIVE_ID, folderPath, finalName, bytes, 'audio/mpeg');
 
-    // Try to produce an anonymous view link; fall back to webUrl
     let publicUrl = null;
-    try {
-      publicUrl = await createAnonViewLink(access_token, process.env.ONEDRIVE_DRIVE_ID, item.id);
-    } catch {
-      // Tenant may block anon links; that's fine—we'll return signed-in webUrl
-    }
+    try { publicUrl = await createAnonViewLink(access_token, process.env.ONEDRIVE_DRIVE_ID, item.id); } catch { /* orgs may block anon links */ }
 
-    return NextResponse.json(
-      {
-        ok: true,
-        // Use a normal https URL to keep Zapier happy
-        audioUrl: publicUrl || item.webUrl,
-        file: { id: item.id, name: item.name, webUrl: item.webUrl },
-        vendorFolder: folderPath,
-        vendorName,
-      },
-      { status: 200, headers: { 'Cache-Control': 'no-store' } }
-    );
-  } catch (err) {
-    console.error('vendor-audio upload error:', err);
-    return NextResponse.json(
-      { ok: false, error: 'Audio upload failed. Please try again.' },
-      { status: 500, headers: { 'Cache-Control': 'no-store' } }
-    );
+    return NextResponse.json({
+      ok: true,
+      audioUrl: publicUrl || item.webUrl, // https only
+      vendorFolder: folderPath,
+      vendorName,
+      file: { id: item.id, name: item.name, webUrl: item.webUrl }
+    });
+  } catch (e) {
+    console.error('vendor-audio error:', e);
+    return NextResponse.json({ ok:false, error:'Audio upload failed.' }, { status:500 });
   }
 }
