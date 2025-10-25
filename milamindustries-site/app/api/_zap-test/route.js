@@ -20,7 +20,15 @@ export async function GET() {
     }
 
     const text = await res.text().catch(()=>'');
-    return NextResponse.json({ ok:res.ok, step:'zap', host, status:res.status, body:text.slice(0,400) }, { status:200 });
+
+    return NextResponse.json({
+      ok: res.ok,
+      step: 'zap',
+      host,
+      status: res.status,
+      body: text.slice(0, 400)
+    }, { status:200 });
+
   } catch (e) {
     return NextResponse.json({ ok:false, step:'server', error:String(e) }, { status:200 });
   }
