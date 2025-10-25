@@ -1,6 +1,6 @@
 // lib/onedrive.js
 export async function uploadToOneDrive(file, vendorName) {
-  // temporary placeholder to allow successful build and deployment
+  // TEMP placeholder so the site builds & you can test end-to-end.
   const filename = file?.name || 'audio.mp3';
   return {
     ok: true,
