@@ -1,100 +1,177 @@
 // app/api/vendor-lead/route.js
 import { NextResponse } from 'next/server';
 
-function toE164(digits) {
-  const d = String(digits || '').replace(/\D+/g, '');
-  if (d.length === 11 && d.startsWith('1')) return `+${d}`;
-  if (d.length === 10) return `+1${d}`;
-  return d ? `+${d}` : '';
-}
-function toUsDate(isoYmd) {
-  if (!isoYmd || typeof isoYmd !== 'string' || !/^\d{4}-\d{2}-\d{2}/.test(isoYmd)) return '';
-  const [y, m, d] = isoYmd.slice(0, 10).split('-');
-  return `${m}/${d}/${y}`;
+export const runtime = 'nodejs';
+
+// Make sure this is set in Vercel env:
+// ZAPIER_VENDOR_HOOK_URL = https://hooks.zapier.com/hooks/catch/xxx/yyy
+const ZAPIER_HOOK = process.env.ZAPIER_VENDOR_HOOK_URL;
+
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    route: '/api/vendor-lead',
+    forwardsTo: ZAPIER_HOOK ? 'ZAPIER_VENDOR_HOOK_URL' : '(not configured)',
+    expects: 'POST application/json',
+  });
 }
 
 export async function POST(req) {
   try {
-    const raw = await req.json();
-    const url = process.env.ZAPIER_VENDOR_HOOK_URL;
-
-    if (!url) {
-      return NextResponse.json({ ok:false, where:'server', error:'Missing ZAPIER_VENDOR_HOOK_URL' }, { status:200 });
+    const ct = (req.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('application/json')) {
+      return NextResponse.json({ ok: false, error: 'Use application/json.' }, { status: 400 });
     }
 
-    // Normalize the usual offenders
-    const phoneDigits = String(raw.phone ?? raw.phoneDigits ?? '').replace(/\D+/g, '');
-    const phoneE164 = raw.phoneE164 || toE164(phoneDigits);
-    const leadDateIso = raw.leadDate || raw.lead_date || raw.leadDateIso || '';
-    const leadDateUs = raw.leadDateUs || toUsDate(leadDateIso);
-    const audioUrl = (typeof raw.audioUrl === 'string' && raw.audioUrl.startsWith('http')) ? raw.audioUrl : undefined;
+    const body = await req.json();
 
-    // Build a SAFE payload for Zapier (text/urls only, no data: URIs)
-    const safe = {
-      // minimal identity + routing
-      vendorName: raw.vendorName || raw.vendorInfo || (raw.fullName || '').trim(),
-      fullName: (raw.fullName || `${raw.firstName || ''} ${raw.lastName || ''}`).trim(),
-      email: raw.email || '',
-      phone: phoneE164,            // <- send the E.164 to any "Phone" typed fields
-      phoneDigits,                 // <- available if your Zap wants just digits
-      leadDate: leadDateUs || '',  // <- send US style which most “Date” fields accept
-      submittedAt: raw.submittedAt || new Date().toISOString(),
+    // ---- Normalize & defaults ----
+    const toStr = v => (v == null ? '' : String(v));
+    const yesNoToBool = v => String(v).toLowerCase() === 'yes';
 
-      // address / property (as plain text)
-      addressStreet: raw?.address?.street || raw.propertyAddress || '',
-      addressCity: raw?.address?.city || '',
-      addressState: raw?.address?.state || '',
-      addressZip: String(raw?.address?.zip || raw.zip || ''),
+    const firstName = toStr(body.firstName);
+    const lastName  = toStr(body.lastName);
+    const fullName  = toStr(body.fullName || `${firstName} ${lastName}`.trim());
+    const email     = toStr(body.email);
+    const phone     = toStr(body.phone);                  // already digits from your client
+    const phoneDigits = phone.replace(/\D+/g, '');
+    const vendorName  = toStr(body.vendorName);
+    const leadStatus  = toStr(body.leadStatus);
+    const leadDate    = toStr(body.leadDate);
+    const preferredContact = toStr(body.preferredContact);
 
-      propertyType: raw?.property?.type || raw.propertyType || '',
-      bedrooms: String(raw?.property?.bedrooms || ''),
-      bathrooms: String(raw?.property?.bathrooms || ''),
-      sqFt: String(raw?.property?.sqFt || raw.sqft || ''),
-      yearBuilt: String(raw?.property?.yearBuilt || raw.yearBuilt || ''),
+    const addr = body.address || {};
+    const prop = body.property || {};
+    const flags = body.flags || {};
 
-      // clean URL only (Zap-friendly)
-      ...(audioUrl ? { audioUrl } : {}),
+    const addressStreet = toStr(addr.street);
+    const addressCity   = toStr(addr.city);
+    const addressState  = toStr(addr.state);
+    const addressZip    = toStr(addr.zip);
 
-      // useful tags
-      leadSource: raw.leadSource || 'Vendor Submission Form',
-      isVendorSubmission: true,
+    const propertyType  = toStr(prop.type);
+    const bedrooms      = toStr(prop.bedrooms);
+    const bathrooms     = toStr(prop.bathrooms);
+    const sqFt          = toStr(prop.sqFt);
+    const yearBuilt     = toStr(prop.yearBuilt);
 
-      // optional for logs
-      onedriveFolder: raw.onedriveFolder || '',
-      notes: raw.notes || '',
-      whySell: raw.whySell || '',
-      timeline: raw.timeline || '',
-      vendorInfo: raw.vendorInfo || '',
+    const whySell       = toStr(body.whySell);
+    const timeline      = toStr(body.timeline);
+    const notes         = toStr(body.notes);
+
+    const submittedAt   = toStr(body.submittedAt || new Date().toISOString());
+
+    const audioUrl      = toStr(body.audioUrl);
+    const onedriveFolder= toStr(body.onedriveFolder);
+
+    // Individual flags (ensure presence even if "No")
+    const f = (k) => (flags[k] || {});
+    const improvementsValue = !!f('improvements').value ? 'Yes' : 'No';
+    const repairsValue      = !!f('repairs').value ? 'Yes' : 'No';
+    const mortgageValue     = !!f('mortgage').value ? 'Yes' : 'No';
+    const liensValue        = !!f('liens').value ? 'Yes' : 'No';
+    const offerValue        = !!f('offerReceived').value ? 'Yes' : 'No';
+
+    const improvementsNotes = toStr(f('improvements').notes);
+    const repairsNotes      = toStr(f('repairs').notes);
+    const mortgageNotes     = toStr(f('mortgage').notes);
+    const liensNotes        = toStr(f('liens').notes);
+    const offerNotes        = toStr(f('offerReceived').notes);
+
+    // ---- Build payload for Zapier ----
+    // A) Flat keys (compatible with your existing Zap field mappings)
+    const flat = {
+      Vendor_Name: vendorName,
+      Lead_Status: leadStatus,
+      Lead_Date: leadDate,
+      Preferred_Contact: preferredContact,
+
+      First_Name: firstName,
+      Last_Name: lastName,
+      Full_Name: fullName,
+      Email: email,
+      Phone: phone,
+      Phone_Digits: phoneDigits,
+
+      Address_Street: addressStreet,
+      Address_City: addressCity,
+      Address_State: addressState,
+      Address_Zip: addressZip,
+
+      Property_Type: propertyType,
+      Property_Bedrooms: bedrooms,
+      Property_Bathrooms: bathrooms,
+      Property_SqFt: sqFt,
+      Property_Year_Built: yearBuilt,
+
+      Why_Sell: whySell,
+      Timeline: timeline,
+      Notes: notes,
+
+      Improvements: improvementsValue,
+      Improvements_Notes: improvementsNotes,
+      Repairs: repairsValue,
+      Repairs_Notes: repairsNotes,
+      Mortgage: mortgageValue,
+      Mortgage_Notes: mortgageNotes,
+      Liens: liensValue,
+      Liens_Notes: liensNotes,
+      Offer_Received: offerValue,
+      Offer_Notes: offerNotes,
+
+      Audio_URL: audioUrl,
+      OneDrive_Folder: onedriveFolder,
+
+      Submitted_At: submittedAt,
+      Is_Vendor_Submission: !!body.isVendorSubmission,
+      Lead_Source: toStr(body.leadSource || 'Vendor Submission Form'),
     };
 
-    // Never forward data: URLs
-    if (typeof safe.audioUrl === 'string' && safe.audioUrl.startsWith('data:')) {
-      delete safe.audioUrl;
+    // B) Also include the original, structured copy
+    const structured = {
+      vendorName, leadStatus, leadDate, preferredContact,
+      firstName, lastName, fullName, email, phone, phoneDigits,
+      address: { street: addressStreet, city: addressCity, state: addressState, zip: addressZip },
+      property: { type: propertyType, bedrooms, bathrooms, sqFt, yearBuilt },
+      whySell, timeline, notes,
+      flags: {
+        improvements: { value: yesNoToBool(improvementsValue), notes: improvementsNotes },
+        repairs:      { value: yesNoToBool(repairsValue),      notes: repairsNotes },
+        mortgage:     { value: yesNoToBool(mortgageValue),     notes: mortgageNotes },
+        liens:        { value: yesNoToBool(liensValue),        notes: liensNotes },
+        offerReceived:{ value: yesNoToBool(offerValue),        notes: offerNotes },
+      },
+      audioUrl, onedriveFolder,
+      submittedAt,
+      isVendorSubmission: !!body.isVendorSubmission,
+      leadSource: toStr(body.leadSource || 'Vendor Submission Form'),
+    };
+
+    const toZapier = {
+      ...flat,
+      _structured: structured,
+    };
+
+    if (!ZAPIER_HOOK) {
+      // Don’t fail silently—surface misconfig in logs and response
+      console.error('ZAPIER_VENDOR_HOOK_URL not configured');
+      return NextResponse.json({ ok: false, error: 'Server not configured (missing Zapier hook URL).' }, { status: 500 });
     }
 
-    const zap = await fetch(url, {
+    const fw = await fetch(ZAPIER_HOOK, {
       method: 'POST',
-      headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
-      body: JSON.stringify(safe),
-    }).catch(e => ({ ok:false, status:0, _neterr:String(e) }));
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(toZapier),
+    });
 
-    if (!zap || zap.status === 0) {
-      return NextResponse.json({ ok:false, where:'network', error: zap?._neterr || 'Network error to Zapier' }, { status:200 });
+    if (!fw.ok) {
+      const text = await fw.text();
+      throw new Error(`Zapier forward failed (${fw.status}). ${text || ''}`);
     }
 
-    const bodyText = await zap.text().catch(()=>'');
-
-    if (!zap.ok) {
-      // Surface the exact Zapier complaint
-      return NextResponse.json({ ok:false, where:'zapier', status: zap.status, error: bodyText }, { status:200 });
-    }
-
-    return NextResponse.json({ ok:true, forwarded:true, zapier: bodyText, sent: safe }, { status:200 });
+    return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ ok:false, where:'server', error:String(err) }, { status:200 });
+    console.error('vendor-lead error:', err);
+    return NextResponse.json({ ok: false, error: err?.message || 'Submit failed.' }, { status: 500 });
   }
-}
-
-export async function GET() {
-  return NextResponse.json({ ok:true, envHasVar: !!process.env.ZAPIER_VENDOR_HOOK_URL });
 }
