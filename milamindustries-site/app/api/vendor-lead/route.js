@@ -6,7 +6,6 @@ export async function POST(req) {
     const data = await req.json();
 
     const ZAPIER_VENDOR_HOOK_URL = process.env.ZAPIER_VENDOR_HOOK_URL; // set in Vercel
-
     if (!ZAPIER_VENDOR_HOOK_URL) {
       return NextResponse.json(
         { ok: false, error: 'Missing ZAPIER_VENDOR_HOOK_URL env var' },
@@ -14,7 +13,11 @@ export async function POST(req) {
       );
     }
 
-    // Forward to your NEW vendor-only Zapier webhook
+    // Safety: if someone ever sends a Base64 data URL, drop or rename it
+    if (typeof data.audioUrl === 'string' && data.audioUrl.startsWith('data:')) {
+      delete data.audioUrl;
+    }
+
     const zapierRes = await fetch(ZAPIER_VENDOR_HOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -22,11 +25,12 @@ export async function POST(req) {
     });
 
     const forwarded = zapierRes.ok;
+    const text = await zapierRes.text().catch(() => '');
 
-    return NextResponse.json({ ok: true, forwarded });
+    return NextResponse.json({ ok: true, forwarded, zapier: text });
   } catch (err) {
     console.error('Vendor lead error:', err);
-    return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
+    return NextResponse.json({ ok: false, error: err?.message || 'Server error' }, { status: 500 });
   }
 }
 
