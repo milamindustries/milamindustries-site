@@ -4,30 +4,51 @@
 import { useState } from 'react';
 
 export default function VendorSubmissionPage() {
-  // same toggles as your main form
+  // toggles
   const [improvements, setImprovements] = useState('No');
   const [repairs, setRepairs] = useState('No');
   const [mortgage, setMortgage] = useState('No');
   const [liens, setLiens] = useState('No');
   const [offerReceived, setOfferReceived] = useState('No');
 
-  // UI state
+  // UI
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // auto-fill current date (YYYY-MM-DD)
   const today = new Date().toISOString().split('T')[0];
 
   async function onSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); // we control validation in JS
     const formEl = e.currentTarget;
     setStatus(null);
+
+    // ---- Debug: show first invalid field if any native constraint fails ----
+    // (Because we use noValidate, this will only run if another attribute like required is missing)
+    const controls = Array.from(formEl.elements || []).filter(
+      (el) => el instanceof HTMLElement && 'checkValidity' in el
+    );
+    for (const el of controls) {
+      // @ts-ignore
+      if (el.willValidate && !el.checkValidity()) {
+        // @ts-ignore
+        const name = el.name || el.id || '(unnamed field)';
+        // @ts-ignore
+        const msg = el.validationMessage || 'This field is invalid.';
+        setStatus({ type: 'error', msg: `${name}: ${msg}` });
+        // visually focus the offender
+        // @ts-ignore
+        el.focus?.();
+        return;
+      }
+    }
+    // -----------------------------------------------------------------------
+
     setLoading(true);
 
     const form = new FormData(formEl);
     const data = Object.fromEntries(form.entries());
 
-    // ---- MP3 upload (optional) ----
+    // Optional MP3 upload
     let audioUrl = '';
     const audioInput = formEl.querySelector('input[name="audioFile"]');
     const file = audioInput?.files?.[0];
@@ -36,7 +57,6 @@ export default function VendorSubmissionPage() {
       if (file) {
         const MAX_BYTES = 10 * 1024 * 1024; // 10MB
         const validTypes = ['audio/mpeg', 'audio/mp3'];
-
         if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.mp3')) {
           throw new Error('Audio must be an .mp3 file.');
         }
@@ -47,12 +67,8 @@ export default function VendorSubmissionPage() {
         const fd = new FormData();
         fd.append('file', file);
 
-        const uploadRes = await fetch('/api/vendor-audio', {
-          method: 'POST',
-          body: fd,
-        });
+        const uploadRes = await fetch('/api/vendor-audio', { method: 'POST', body: fd });
         const uploadJson = await uploadRes.json();
-
         if (!uploadRes.ok || !uploadJson?.ok || !uploadJson?.url) {
           throw new Error(uploadJson?.error || 'Audio upload failed.');
         }
@@ -60,22 +76,18 @@ export default function VendorSubmissionPage() {
       }
     } catch (uploadErr) {
       console.error(uploadErr);
-      setStatus({
-        type: 'error',
-        msg: uploadErr?.message || 'Audio upload failed. Please check the file and try again.',
-      });
+      setStatus({ type: 'error', msg: uploadErr?.message || 'Audio upload failed.' });
       setLoading(false);
       return;
     }
-    // --------------------------------
 
-    // Normalize phone to digits only so it won’t trip any patterns downstream
+    // Normalize phone to digits only (avoid any pattern issues downstream)
     const phoneRaw = data.phone || '';
-    const normalizedPhone = phoneRaw.replace(/\D+/g, '');
+    const normalizedPhone = String(phoneRaw).replace(/\D+/g, '');
 
     const payload = {
       ...data,
-      phone: normalizedPhone, // normalized
+      phone: normalizedPhone,
       submittedAt: new Date().toISOString(),
       fullName: [data.firstName, data.lastName].filter(Boolean).join(' ').trim(),
       flags: {
@@ -100,7 +112,7 @@ export default function VendorSubmissionPage() {
       },
       leadSource: 'Vendor Submission Form',
       isVendorSubmission: true,
-      audioUrl, // may be empty string if no upload
+      audioUrl,
     };
 
     try {
@@ -110,19 +122,14 @@ export default function VendorSubmissionPage() {
         body: JSON.stringify(payload),
       });
       const json = await res.json();
-
       if (!res.ok || !json?.ok) throw new Error(json?.error || 'Submit failed');
 
       setStatus({ type: 'success', msg: 'Thanks—submitted successfully.' });
-
       formEl.reset();
       setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
     } catch (err) {
       console.error(err);
-      setStatus({
-        type: 'error',
-        msg: err?.message || 'There was an error submitting the form. Please try again.',
-      });
+      setStatus({ type: 'error', msg: err?.message || 'There was an error submitting the form.' });
     } finally {
       setLoading(false);
     }
@@ -135,22 +142,13 @@ export default function VendorSubmissionPage() {
       </h1>
 
       <div className="mt-10 flex justify-center">
-        <form onSubmit={onSubmit} className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
+        {/* IMPORTANT: disable native browser validation */}
+        <form noValidate onSubmit={onSubmit} className="w-full space-y-5 bg-gray-50 p-6 rounded-2xl border shadow-sm">
           {/* 1) Vendor info */}
-          <Select
-            label="Vendor info *"
-            name="vendorInfo"
-            required
-            options={['LeadBanc', 'No Accent Callers', 'Pineapple', 'REVA']}
-          />
+          <Select label="Vendor info *" name="vendorInfo" required options={['LeadBanc', 'No Accent Callers', 'Pineapple', 'REVA']} />
 
           {/* 2) Lead status */}
-          <Select
-            label="Lead status *"
-            name="leadStatus"
-            required
-            options={['Cold', 'Warm', 'Hot']}
-          />
+          <Select label="Lead status *" name="leadStatus" required options={['Cold', 'Warm', 'Hot']} />
 
           {/* Contact details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -163,12 +161,12 @@ export default function VendorSubmissionPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Field label="City *" name="city" required />
             <Field label="State *" name="state" required />
-            <Field label="Zip Code *" name="zip" required inputMode="numeric" />
+            <Field label="Zip Code *" name="zip" required inputMode="numeric" placeholder="e.g., 30228" />
           </div>
 
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Email *" name="email" type="email" required />
+            <Field label="Email *" name="email" type="email" required autoComplete="email" />
             <Field
               label="Phone *"
               name="phone"
@@ -177,6 +175,7 @@ export default function VendorSubmissionPage() {
               required
               placeholder="e.g., 5551234567"
               autoComplete="tel"
+              // NOTE: no pattern prop here!
             />
           </div>
 
@@ -269,12 +268,7 @@ export default function VendorSubmissionPage() {
           />
 
           {/* Notes */}
-          <TextArea
-            label="Notes"
-            name="notes"
-            rows={4}
-            placeholder="Anything else worth noting (optional)"
-          />
+          <TextArea label="Notes" name="notes" rows={4} placeholder="Anything else worth noting (optional)" />
 
           {/* MP3 upload */}
           <label className="block text-sm">
