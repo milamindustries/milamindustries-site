@@ -71,22 +71,9 @@ export default function Page() {
     <div className="min-h-screen" style={{ '--accent': data.theme.accent }}>
       {/* NAV */}
 
-      {/* HERO (full-bleed image — only change) */}
+      {/* HERO */}
       <section id="home" className="relative overflow-hidden">
-        {/* Full-bleed background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
-            <img
-              src={data.hero.imageUrl}
-              alt="home"
-              className="w-full h-[520px] md:h-[640px] object-cover"
-            />
-            {/* soft gradient for legibility */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/85 via-white/70 to-transparent" />
-          </div>
-        </div>
-
-        {/* Content container (unchanged) */}
+        <img src={data.hero.imageUrl} alt="home" className="absolute inset-0 w-full h-full object-cover opacity-30" />
         <div className="relative max-w-6xl mx-auto px-4 py-24 md:py-32">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight text-gray-900 max-w-3xl">{data.hero.title}</h1>
           <p className="mt-4 text-lg md:text-xl max-w-2xl text-gray-700">{data.hero.subtitle}</p>
