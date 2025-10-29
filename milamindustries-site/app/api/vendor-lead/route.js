@@ -32,8 +32,12 @@ export async function POST(req) {
     const firstName = toStr(body.firstName);
     const lastName  = toStr(body.lastName);
     const fullName  = toStr(body.fullName || `${firstName} ${lastName}`.trim());
-    const email     = toStr(body.email);
-    const phone     = toStr(body.phone);                  // already digits from your client
+
+    // ⬇️ Key change: sanitize email (blank -> null)
+    const emailRaw  = body.email;
+    const email     = (emailRaw && String(emailRaw).trim() !== '') ? String(emailRaw).trim() : null;
+
+    const phone     = toStr(body.phone);
     const phoneDigits = phone.replace(/\D+/g, '');
     const vendorName  = toStr(body.vendorName);
     const leadStatus  = toStr(body.leadStatus);
@@ -79,7 +83,6 @@ export async function POST(req) {
     const offerNotes        = toStr(f('offerReceived').notes);
 
     // ---- Build payload for Zapier ----
-    // A) Flat keys (compatible with your existing Zap field mappings)
     const flat = {
       Vendor_Name: vendorName,
       Lead_Status: leadStatus,
@@ -89,7 +92,7 @@ export async function POST(req) {
       First_Name: firstName,
       Last_Name: lastName,
       Full_Name: fullName,
-      Email: email,
+      // Email: (conditionally added below)
       Phone: phone,
       Phone_Digits: phoneDigits,
 
@@ -127,10 +130,17 @@ export async function POST(req) {
       Lead_Source: toStr(body.leadSource || 'Vendor Submission Form'),
     };
 
-    // B) Also include the original, structured copy
+    // ⬇️ Only include Email if present (prevents “pattern” errors)
+    if (email) {
+      flat.Email = email;
+    }
+
+    // Structured copy
     const structured = {
       vendorName, leadStatus, leadDate, preferredContact,
-      firstName, lastName, fullName, email, phone, phoneDigits,
+      firstName, lastName, fullName,
+      email: email ?? null,
+      phone, phoneDigits,
       address: { street: addressStreet, city: addressCity, state: addressState, zip: addressZip },
       property: { type: propertyType, bedrooms, bathrooms, sqFt, yearBuilt },
       whySell, timeline, notes,
@@ -153,7 +163,6 @@ export async function POST(req) {
     };
 
     if (!ZAPIER_HOOK) {
-      // Don’t fail silently—surface misconfig in logs and response
       console.error('ZAPIER_VENDOR_HOOK_URL not configured');
       return NextResponse.json({ ok: false, error: 'Server not configured (missing Zapier hook URL).' }, { status: 500 });
     }
