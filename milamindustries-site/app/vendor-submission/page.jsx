@@ -206,7 +206,6 @@ export default function VendorSubmissionPage() {
 
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Email now NOT required */}
             <Field label="Email" name="email" type="email" autoComplete="email" />
             <Field
               label="Phone *"
@@ -288,16 +287,14 @@ export default function VendorSubmissionPage() {
             value={liens}
             setValue={setLiens}
             textareaName="liensNotes"
-            placeholder="Describe any liens…"
-          />
+            placeholder="Describe any liens…" />
           <YesNoWithText
             label="Have you already received an offer on the property?"
             name="offerReceived"
             value={offerReceived}
             setValue={setOfferReceived}
             textareaName="offerNotes"
-            placeholder="Optional—who/what was offered?"
-          />
+            placeholder="Optional—who/what was offered?" />
 
           {/* Timeline */}
           <Select
@@ -310,9 +307,9 @@ export default function VendorSubmissionPage() {
           {/* Notes */}
           <TextArea label="Notes" name="notes" rows={4} placeholder="Anything else worth noting (optional)" />
 
-          {/* MP3 upload */}
+          {/* MP3 upload (visual text only updated) */}
           <label className="block text-sm">
-            <span className="text-gray-700">Upload Audio (MP3, max 10MB)</span>
+            <span className="text-gray-700">Upload Audio (MP3, max 3.5MB)</span>
             <input
               className="mt-1 w-full rounded-xl border px-3 py-2 bg-white"
               type="file"
@@ -320,7 +317,7 @@ export default function VendorSubmissionPage() {
               accept=".mp3,audio/mpeg"
             />
             <span className="mt-1 block text-xs text-gray-500">
-              Optional. Only .mp3 files are accepted. Max size 10MB.
+              Optional. Only .mp3 files are accepted. Max size 3.5MB.
             </span>
           </label>
 
