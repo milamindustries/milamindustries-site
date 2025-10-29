@@ -1,4 +1,5 @@
 import './(styles)/globals.css';
+
 // app/layout.jsx
 export const metadata = {
   title: 'Milam Industries LLC',
@@ -29,29 +30,31 @@ export default function RootLayout({ children }) {
         {/* Page content */}
         <main className="mx-auto max-w-6xl px-6 pt-8 pb-6">{children}</main>
 
-       <footer className="bg-gray-900 text-gray-100 py-10">
-  <div className="max-w-6xl mx-auto px-6 text-center space-y-6">
-    <nav className="flex flex-wrap justify-center gap-6 font-semibold text-white text-base">
-      <a href="/" className="hover:text-gray-300">Home</a>
-      <a href="/services" className="hover:text-gray-300">Services</a>
-      <a href="/how-it-works" className="hover:text-gray-300">How It Works</a>
-      <a href="/about" className="hover:text-gray-300">About</a>
-      <a href="/faq" className="hover:text-gray-300">FAQ</a>
-      <a href="/contact" className="hover:text-gray-300">Contact</a>
-    </nav>
+        {/* Site-wide footer */}
+        <footer className="bg-gray-900 text-gray-100 py-10">
+          <div className="max-w-6xl mx-auto px-6 text-center space-y-6">
+            <nav className="flex flex-wrap justify-center gap-6 font-semibold text-white text-base">
+              <a href="/" className="hover:text-gray-300">Home</a>
+              <a href="/services" className="hover:text-gray-300">Services</a>
+              <a href="/how-it-works" className="hover:text-gray-300">How It Works</a>
+              <a href="/about" className="hover:text-gray-300">About</a>
+              <a href="/faq" className="hover:text-gray-300">FAQ</a>
+              <a href="/contact" className="hover:text-gray-300">Contact</a>
+              <a href="/privacy-policy" className="hover:text-gray-300">Privacy Policy</a>
+              <a href="/terms" className="hover:text-gray-300">Terms & Conditions</a>
+            </nav>
 
-    <p className="text-gray-300 text-sm max-w-3xl mx-auto leading-relaxed">
-      We are a real estate solutions and investment firm that specializes in helping homeowners 
-      get rid of burdensome houses fast. We are investors and problem solvers who can buy your 
-      house quickly with a fair, all-cash offer.
-    </p>
+            <p className="text-gray-300 text-sm max-w-3xl mx-auto leading-relaxed">
+              We are a real estate solutions and investment firm that specializes in helping homeowners 
+              get rid of burdensome houses fast. We are investors and problem solvers who can buy your 
+              house quickly with a fair, all-cash offer.
+            </p>
 
-    <p className="text-gray-400 text-sm mt-4">
-      © {new Date().getFullYear()} Milam Industries LLC — All rights reserved.
-    </p>
-  </div>
-</footer>
-
+            <p className="text-gray-400 text-sm mt-4">
+              © {new Date().getFullYear()} Milam Industries LLC — All rights reserved.
+            </p>
+          </div>
+        </footer>
       </body>
     </html>
   );
