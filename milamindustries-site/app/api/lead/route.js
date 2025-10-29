@@ -27,6 +27,11 @@ export async function POST(req) {
     );
   }
 
+  // ⬇️ Sanitize email: blank -> null (avoids downstream pattern checks)
+  if (typeof data.email === 'string' && data.email.trim() === '') {
+    data.email = null;
+  }
+
   // Try to forward to Zapier if the env var is set.
   // If it's missing or fails, still return ok:true so the user sees success.
   let forwarded = false;
