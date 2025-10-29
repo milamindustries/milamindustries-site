@@ -206,7 +206,8 @@ export default function VendorSubmissionPage() {
 
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Email *" name="email" type="email" required autoComplete="email" />
+            {/* Email now NOT required */}
+            <Field label="Email" name="email" type="email" autoComplete="email" />
             <Field
               label="Phone *"
               name="phone"
