@@ -113,7 +113,8 @@ export default function ContactPage() {
 
           {/* Contact info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Email *" name="email" type="email" required />
+            {/* 🔧 Email now optional */}
+            <Field label="Email" name="email" type="email" />
             {/* ✅ Numeric-only phone field */}
             <Field
               label="Phone *"
@@ -186,12 +187,12 @@ export default function ContactPage() {
           <p className="text-xs text-gray-500">By submitting, you agree to be contacted by Milam Industries LLC.</p>
         </form>
 
-        {/* ✅ Sidebar restored */}
+        {/* ✅ Sidebar */}
         <aside className="bg-white p-6 rounded-2xl border shadow-sm">
           <h2 className="font-semibold text-lg">Talk to a team member</h2>
           <div className="mt-3 text-sm text-gray-700 space-y-1">
-            <p><b>Phone:</b> 678-807-8133</p>
-            <p><b>Email:</b> legal@milamindustries.com</p>
+            <p><b>Phone:</b> 888-929-3632</p>
+            <p><b>Email:</b> info@milamindustries.com</p>
             <p><b>HQ Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell, GA 30076</p>
           </div>
 
@@ -211,9 +212,9 @@ export default function ContactPage() {
           <div className="mt-6 bg-gray-900 text-white p-5 rounded-xl text-center shadow-sm">
             <p className="text-base font-semibold">Prefer to speak directly?</p>
             <p className="mt-1 text-sm">
-              <a href="tel:+16788078133" className="underline hover:text-gray-300" aria-label="Call Milam Industries LLC now">📞 Call us now</a>{' '}
+              <a href="tel:+18889293632" className="underline hover:text-gray-300" aria-label="Call Milam Industries LLC now">📞 Call us now</a>{' '}
               or{' '}
-              <a href="sms:+16788078133" className="underline hover:text-gray-300" aria-label="Text Milam Industries LLC">💬 Text us</a>.
+              <a href="sms:+18889293632" className="underline hover:text-gray-300" aria-label="Text Milam Industries LLC">💬 Text us</a>.
             </p>
             <p className="mt-1 text-xs text-gray-300">
               Our team is available 7 days a week to answer your questions.
