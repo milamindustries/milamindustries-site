@@ -22,10 +22,22 @@ export default function VendorSubmissionPage() {
     const formEl = e.currentTarget;
     setStatus(null);
 
-    // ✅ Minimal, SSR-safe validity check
-    if (typeof formEl.reportValidity === 'function' && !formEl.reportValidity()) {
-      setStatus({ type: 'error', msg: 'Please complete the required fields.' });
-      return;
+    // Basic validity pass (since we use noValidate)
+    const controls = Array.from(formEl.elements || []).filter(
+      (el) => el instanceof HTMLElement && 'checkValidity' in el
+    );
+    for (const el of controls) {
+      // @ts-ignore
+      if (el.willValidate && !el.checkValidity()) {
+        // @ts-ignore
+        const name = el.name || el.id || '(unnamed field)';
+        // @ts-ignore
+        const msg = el.validationMessage || 'This field is invalid.';
+        setStatus({ type: 'error', msg: `${name}: ${msg}` });
+        // @ts-ignore
+        el.focus?.();
+        return;
+      }
     }
 
     setLoading(true);
@@ -91,7 +103,7 @@ export default function VendorSubmissionPage() {
 
     // Normalize phone to digits only
     const phoneRaw = data.phone || '';
-    const normalizedPhone = String(phoneRaw).replace(/\D+/g, '');
+    the const normalizedPhone = String(phoneRaw).replace(/\D+/g, '');
 
     const payload = {
       ...data,
@@ -116,6 +128,8 @@ export default function VendorSubmissionPage() {
         type: data.propertyType || '',
         bedrooms: data.bedrooms || '',
         bathrooms: data.bathrooms || '',
+        askingPrice: data.askingPrice || '',
+        marketValue: data.marketValue || '',
         sqFt: data.sqft || '',
         yearBuilt: data.yearBuilt || '',
       },
@@ -189,7 +203,7 @@ export default function VendorSubmissionPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Field label="City *" name="city" required />
             <Field label="State *" name="state" required />
-            <Field label="Zip Code *" name="zip" required inputMode="numeric" placeholder="e.g., 30228" />
+            <Field label="Zip Code *" name="zip" required inputMode="numeric" />
           </div>
 
           {/* Contact info */}
@@ -201,7 +215,6 @@ export default function VendorSubmissionPage() {
               type="tel"
               inputMode="tel"
               required
-              placeholder="e.g., 5551234567"
               autoComplete="tel"
             />
           </div>
@@ -222,7 +235,7 @@ export default function VendorSubmissionPage() {
             </div>
           </div>
 
-          <TextArea label="Why Sell?" name="whySell" rows={4} placeholder="Tell us what’s going on (optional)" />
+          <TextArea label="Why Sell?" name="whySell" rows={4} />
 
           {/* Property type */}
           <Select
@@ -238,10 +251,16 @@ export default function VendorSubmissionPage() {
             <Select label="How many bathrooms? *" name="bathrooms" required options={['1','2','3','4','5','6','7','8+']} />
           </div>
 
+          {/* Asking Price + Market Value (new row above size/year) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Asking price" name="askingPrice" />
+            <Field label="Market value" name="marketValue" />
+          </div>
+
           {/* Size / Year built */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Approx. square feet" name="sqft" inputMode="numeric" placeholder="e.g., 1650" />
-            <Field label="Year the home was built" name="yearBuilt" inputMode="numeric" placeholder="e.g., 1994" />
+            <Field label="Approx. square feet" name="sqft" inputMode="numeric" />
+            <Field label="Year the home was built" name="yearBuilt" inputMode="numeric" />
           </div>
 
           {/* Condition / toggles with conditional notes */}
@@ -251,7 +270,6 @@ export default function VendorSubmissionPage() {
             value={improvements}
             setValue={setImprovements}
             textareaName="improvementsNotes"
-            placeholder="Briefly describe improvements…"
           />
           <YesNoWithText
             label="Any known repairs needed?"
@@ -259,7 +277,6 @@ export default function VendorSubmissionPage() {
             value={repairs}
             setValue={setRepairs}
             textareaName="repairsNotes"
-            placeholder="What repairs are needed?"
           />
           <YesNoWithText
             label="Is there a current mortgage?"
@@ -267,22 +284,19 @@ export default function VendorSubmissionPage() {
             value={mortgage}
             setValue={setMortgage}
             textareaName="mortgageNotes"
-            placeholder="Optional details (balance, behind, etc.)"
           />
           <YesNoWithText
             label="Are there any liens against the property?"
             name="liens"
             value={liens}
             setValue={setLiens}
-            textareaName="liensNotes"
-            placeholder="Describe any liens…" />
+            textareaName="liensNotes" />
           <YesNoWithText
             label="Have you already received an offer on the property?"
             name="offerReceived"
             value={offerReceived}
             setValue={setOfferReceived}
-            textareaName="offerNotes"
-            placeholder="Optional—who/what was offered?" />
+            textareaName="offerNotes" />
 
           {/* Timeline */}
           <Select
@@ -293,7 +307,7 @@ export default function VendorSubmissionPage() {
           />
 
           {/* Notes */}
-          <TextArea label="Notes" name="notes" rows={4} placeholder="Anything else worth noting (optional)" />
+          <TextArea label="Notes" name="notes" rows={4} />
 
           {/* MP3 upload (visual text only updated) */}
           <label className="block text-sm">
@@ -350,7 +364,6 @@ function Field({ label, name, type = 'text', required, inputMode, placeholder, d
         name={name}
         required={required}
         inputMode={inputMode}
-        placeholder={placeholder}
         defaultValue={defaultValue}
         autoComplete={autoComplete}
       />
@@ -362,7 +375,7 @@ function TextArea({ label, name, rows = 3, placeholder }) {
   return (
     <label className="block text-sm">
       <span className="text-gray-700">{label}</span>
-      <textarea className="mt-1 w-full rounded-xl border px-3 py-2" name={name} rows={rows} placeholder={placeholder} />
+      <textarea className="mt-1 w-full rounded-xl border px-3 py-2" name={name} rows={rows} />
     </label>
   );
 }
@@ -405,7 +418,6 @@ function YesNoWithText({ label, name, value, setValue, textareaName, placeholder
           className="mt-3 w-full rounded-xl border px-3 py-2 text-sm"
           name={textareaName}
           rows={3}
-          placeholder={placeholder}
         />
       )}
     </div>
