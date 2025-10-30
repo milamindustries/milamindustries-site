@@ -1,5 +1,64 @@
 // app/api/vendor-lead/route.js
 import { NextResponse } from 'next/server';
+export const runtime = 'nodejs';
+
+const ZAPIER_HOOK = process.env.ZAPIER_VENDOR_HOOK_URL;
+
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    route: '/api/vendor-lead',
+    forwardsTo: ZAPIER_HOOK ? 'ZAPIER_VENDOR_HOOK_URL' : '(not configured)',
+    expects: 'POST application/json',
+  });
+}
+
+export async function POST(req) {
+  try {
+    const ct = (req.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('application/json')) {
+      return NextResponse.json({ ok: false, error: 'Use application/json.' }, { status: 400 });
+    }
+
+    const body = await req.json();
+    const toStr = (v) => (v == null ? '' : String(v));
+    const yesNoToBool = (v) => String(v).toLowerCase() === 'yes';
+
+    const firstName = toStr(body.firstName);
+    const lastName = toStr(body.lastName);
+    const fullName = toStr(body.fullName || `${firstName} ${lastName}`.trim());
+    const emailRaw = body.email;
+    const email = emailRaw && String(emailRaw).trim() !== '' ? String(emailRaw).trim() : null;
+    const phone = toStr(body.phone);
+    const phoneDigits = phone.replace(/\D+/g, '');
+    const vendorName = toStr(body.vendorName);
+    const leadStatus = toStr(body.leadStatus);
+    const leadDate = toStr(body.leadDate);
+    const preferredContact = toStr(body.preferredContact);
+
+    const addr = body.address || {};
+    const prop = body.property || {};
+    const flags = body.flags || {};
+
+    const addressStreet = toStr(addr.street);
+    const addressCity = toStr(addr.city);
+    const addressState = toStr(addr.state);
+    const addressZip = toStr(addr.zip);
+
+    const propertyType = toStr(prop.type);
+    const bedrooms = toStr(prop.bedrooms);
+    const bathrooms = toStr(prop.bathrooms);
+    const askingPrice = toStr(prop.askingPrice);
+    const marketValue = toStr(prop.marketValue); // renamed
+    const sqFt = toStr(prop.sqFt);
+    const yearBuilt = toStr(prop.yearBuilt);
+
+    const whySell = toStr(body.whySell);
+    const timeline = toStr(body.timeline);
+    const notes = toStr(body.notes);
+    const submittedAt = toStr(body.submittedAt || new Date().toISOString());
+// app/api/vendor-lead/route.js
+import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
