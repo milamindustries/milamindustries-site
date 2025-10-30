@@ -46,7 +46,6 @@ export default function VendorSubmissionPage() {
     const data = Object.fromEntries(form.entries());
 
     // Compute a vendorName for OneDrive foldering:
-    // Prefer the "Vendor info" selection; otherwise fall back to "FirstName LastName".
     const vendorName =
       String((data.vendorInfo || `${data.firstName || ''} ${data.lastName || ''}`) || 'Unknown Vendor')
         .replace(/\s+/g, ' ')
@@ -128,6 +127,9 @@ export default function VendorSubmissionPage() {
         type: data.propertyType || '',
         bedrooms: data.bedrooms || '',
         bathrooms: data.bathrooms || '',
+        // ✨ NEW
+        askingPrice: data.askingPrice || '',
+        arv: data.arv || '',
         sqFt: data.sqft || '',
         yearBuilt: data.yearBuilt || '',
       },
@@ -248,6 +250,12 @@ export default function VendorSubmissionPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select label="How many bedrooms? *" name="bedrooms" required options={['1','2','3','4','5','6','7','8+']} />
             <Select label="How many bathrooms? *" name="bathrooms" required options={['1','2','3','4','5','6','7','8+']} />
+          </div>
+
+          {/* ✨ NEW: Asking Price + ARV (required), above sqft/year */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Asking price *" name="askingPrice" required placeholder="e.g., $250,000 or 250k" />
+            <Field label="ARV *" name="arv" required placeholder="e.g., $320,000" />
           </div>
 
           {/* Size / Year built */}
