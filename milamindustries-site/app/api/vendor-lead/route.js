@@ -56,8 +56,6 @@ export async function POST(req) {
     const propertyType  = toStr(prop.type);
     const bedrooms      = toStr(prop.bedrooms);
     const bathrooms     = toStr(prop.bathrooms);
-    const askingPrice   = toStr(prop.askingPrice);   // NEW
-    const marketValue   = toStr(prop.marketValue);   // NEW
     const sqFt          = toStr(prop.sqFt);
     const yearBuilt     = toStr(prop.yearBuilt);
 
@@ -106,8 +104,6 @@ export async function POST(req) {
       Property_Type: propertyType,
       Property_Bedrooms: bedrooms,
       Property_Bathrooms: bathrooms,
-      Property_Asking_Price: askingPrice, // NEW
-      Property_Market_Value: marketValue, // NEW
       Property_SqFt: sqFt,
       Property_Year_Built: yearBuilt,
 
@@ -146,15 +142,7 @@ export async function POST(req) {
       email: email ?? null,
       phone, phoneDigits,
       address: { street: addressStreet, city: addressCity, state: addressState, zip: addressZip },
-      property: {
-        type: propertyType,
-        bedrooms,
-        bathrooms,
-        askingPrice,  // NEW
-        marketValue,  // NEW
-        sqFt,
-        yearBuilt
-      },
+      property: { type: propertyType, bedrooms, bathrooms, sqFt, yearBuilt },
       whySell, timeline, notes,
       flags: {
         improvements: { value: yesNoToBool(improvementsValue), notes: improvementsNotes },
