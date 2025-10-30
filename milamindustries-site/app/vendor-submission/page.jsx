@@ -116,6 +116,8 @@ export default function VendorSubmissionPage() {
         type: data.propertyType || '',
         bedrooms: data.bedrooms || '',
         bathrooms: data.bathrooms || '',
+        askingPrice: data.askingPrice || '',
+        marketValue: data.marketValue || '',
         sqFt: data.sqft || '',
         yearBuilt: data.yearBuilt || '',
       },
@@ -236,6 +238,12 @@ export default function VendorSubmissionPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Select label="How many bedrooms? *" name="bedrooms" required options={['1','2','3','4','5','6','7','8+']} />
             <Select label="How many bathrooms? *" name="bathrooms" required options={['1','2','3','4','5','6','7','8+']} />
+          </div>
+
+          {/* Asking price / Market value (added above Size / Year built) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="Asking price" name="askingPrice" />
+            <Field label="Market value" name="marketValue" />
           </div>
 
           {/* Size / Year built */}
