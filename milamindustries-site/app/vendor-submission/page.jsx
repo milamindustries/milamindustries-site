@@ -22,22 +22,10 @@ export default function VendorSubmissionPage() {
     const formEl = e.currentTarget;
     setStatus(null);
 
-    // Basic validity pass (since we use noValidate)
-    const controls = Array.from(formEl.elements || []).filter(
-      (el) => el instanceof HTMLElement && 'checkValidity' in el
-    );
-    for (const el of controls) {
-      // @ts-ignore
-      if (el.willValidate && !el.checkValidity()) {
-        // @ts-ignore
-        const name = el.name || el.id || '(unnamed field)';
-        // @ts-ignore
-        const msg = el.validationMessage || 'This field is invalid.';
-        setStatus({ type: 'error', msg: `${name}: ${msg}` });
-        // @ts-ignore
-        el.focus?.();
-        return;
-      }
+    // ✅ Minimal, SSR-safe validity check
+    if (typeof formEl.reportValidity === 'function' && !formEl.reportValidity()) {
+      setStatus({ type: 'error', msg: 'Please complete the required fields.' });
+      return;
     }
 
     setLoading(true);
