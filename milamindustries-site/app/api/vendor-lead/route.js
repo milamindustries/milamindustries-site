@@ -58,6 +58,8 @@ export async function POST(req) {
     const bathrooms     = toStr(prop.bathrooms);
     const sqFt          = toStr(prop.sqFt);
     const yearBuilt     = toStr(prop.yearBuilt);
+    const askingPrice   = toStr(prop.askingPrice ?? body.askingPrice);
+    const marketValue   = toStr(prop.marketValue ?? body.marketValue);
 
     const whySell       = toStr(body.whySell);
     const timeline      = toStr(body.timeline);
@@ -106,6 +108,12 @@ export async function POST(req) {
       Property_Bathrooms: bathrooms,
       Property_SqFt: sqFt,
       Property_Year_Built: yearBuilt,
+      Property_Asking_Price: askingPrice,
+      Property_Market_Value: marketValue,
+
+      // Convenience top-level mirrors for easier Zapier mapping
+      Asking_Price: askingPrice,
+      Market_Value: marketValue,
 
       Why_Sell: whySell,
       Timeline: timeline,
@@ -142,7 +150,7 @@ export async function POST(req) {
       email: email ?? null,
       phone, phoneDigits,
       address: { street: addressStreet, city: addressCity, state: addressState, zip: addressZip },
-      property: { type: propertyType, bedrooms, bathrooms, sqFt, yearBuilt },
+      property: { type: propertyType, bedrooms, bathrooms, sqFt, yearBuilt, askingPrice, marketValue },
       whySell, timeline, notes,
       flags: {
         improvements: { value: yesNoToBool(improvementsValue), notes: improvementsNotes },
