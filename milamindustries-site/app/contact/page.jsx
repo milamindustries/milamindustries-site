@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link'; // ✅ ADDED
 
 export default function ContactPage() {
   // Yes/No toggles
@@ -10,6 +11,11 @@ export default function ContactPage() {
   const [mortgage, setMortgage] = useState('No');
   const [liens, setLiens] = useState('No');
   const [offerReceived, setOfferReceived] = useState('No');
+
+  // ✅ ADDED: Required consent checkboxes
+  const [consentNonMarketing, setConsentNonMarketing] = useState(false);
+  const [consentMarketing, setConsentMarketing] = useState(false);
+  const [consentError, setConsentError] = useState(null);
 
   // UI state
   const [status, setStatus] = useState(null);
@@ -22,6 +28,14 @@ export default function ContactPage() {
     e.preventDefault();
     const formEl = e.currentTarget;
     setStatus(null);
+
+    // ✅ ADDED: Enforce required checkboxes BEFORE submission
+    if (!consentNonMarketing || !consentMarketing) {
+      setConsentError('Please check both consent boxes to submit the form.');
+      return;
+    }
+    setConsentError(null);
+
     setLoading(true);
 
     const form = new FormData(formEl);
@@ -51,6 +65,13 @@ export default function ContactPage() {
         sqFt: data.sqft || '',
         yearBuilt: data.yearBuilt || '',
       },
+
+      // ✅ ADDED: include consent data in payload (does not affect anything else)
+      consents: {
+        nonMarketingText: true,
+        marketingText: true,
+        consentTimestamp: new Date().toISOString(),
+      },
     };
 
     try {
@@ -75,6 +96,12 @@ export default function ContactPage() {
 
       formEl.reset();
       setImprovements('No'); setRepairs('No'); setMortgage('No'); setLiens('No'); setOfferReceived('No');
+
+      // ✅ ADDED: reset the new checkbox states too
+      setConsentNonMarketing(false);
+      setConsentMarketing(false);
+      setConsentError(null);
+
     } catch (err) {
       console.error(err);
       setStatus({
@@ -180,9 +207,55 @@ export default function ContactPage() {
             </div>
           )}
 
+          {/* ✅ ADDED: Consent checkboxes ABOVE the submit button */}
+          <div className="space-y-4 pt-2">
+            <label className="flex items-start gap-3 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                className="mt-1 h-4 w-4 rounded border-gray-300"
+                checked={consentNonMarketing}
+                onChange={(e) => setConsentNonMarketing(e.target.checked)}
+                required
+              />
+              <span>
+                I Consent to Receive non-marketing text messages from <b>Milam Industries LLC</b> about my property inquiry.
+                Message frequency varies. Message &amp; data rates may apply. Text <b>HELP</b> for assistance. Reply <b>STOP</b> to opt out.
+              </span>
+            </label>
+
+            <label className="flex items-start gap-3 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                className="mt-1 h-4 w-4 rounded border-gray-300"
+                checked={consentMarketing}
+                onChange={(e) => setConsentMarketing(e.target.checked)}
+                required
+              />
+              <span>
+                I Consent to receive marketing text messages from <b>Milam Industries LLC</b> at the number provided.
+                Message frequency varies. Message &amp; data rates may apply. Text <b>HELP</b> for assistance. Reply <b>STOP</b> to opt out.
+              </span>
+            </label>
+
+            {consentError && (
+              <p className="text-sm text-red-600">{consentError}</p>
+            )}
+          </div>
+
           <button type="submit" className="w-full py-3 rounded-xl bg-gray-900 text-white text-sm disabled:opacity-60" disabled={loading}>
             {loading ? 'Submitting…' : 'Submit'}
           </button>
+
+          {/* ✅ ADDED: Privacy Policy | Terms links UNDER the submit button */}
+          <div className="text-center text-sm">
+            <Link href="/privacy-policy" className="text-blue-600 underline">
+              Privacy Policy
+            </Link>
+            <span className="mx-2 text-gray-400">|</span>
+            <Link href="/terms" className="text-blue-600 underline">
+              Terms of Service
+            </Link>
+          </div>
 
           <p className="text-xs text-gray-500">By submitting, you agree to be contacted by Milam Industries LLC.</p>
         </form>
