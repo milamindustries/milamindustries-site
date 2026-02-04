@@ -218,8 +218,8 @@ export default function ContactPage() {
                 required
               />
               <span>
-                I Consent to Receive non-marketing text messages from <b>Milam Industries LLC</b> about my property inquiry.
-                Message frequency varies. Message &amp; data rates may apply. Text <b>HELP</b> for assistance. Reply <b>STOP</b> to opt out.
+                I Consent to Receive transactional text messages from <b>Milam Industries LLC</b> related to my inquiry (such as request confirmations or updates).
+                Message frequency may vary. Message &amp; data rates may apply. Text <b>HELP</b> for assistance. Reply <b>STOP</b> to opt out.
               </span>
             </label>
 
