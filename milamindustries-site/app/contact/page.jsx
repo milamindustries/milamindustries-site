@@ -246,6 +246,10 @@ export default function ContactPage() {
             {loading ? 'Submitting…' : 'Submit'}
           </button>
 
+          <p className="mt-2 text-xs text-gray-500 text-center">
+  SMS consent is not a condition of purchase.
+</p>
+          
           {/* ✅ ADDED: Privacy Policy | Terms links UNDER the submit button */}
           <div className="text-center text-sm">
             <Link href="/privacy-policy" className="text-blue-600 underline">
