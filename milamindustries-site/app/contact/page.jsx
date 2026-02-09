@@ -232,8 +232,8 @@ export default function ContactPage() {
                 required
               />
               <span>
-                I Consent to receive marketing text messages from <b>Milam Industries LLC</b> at the number provided.
-                Message frequency varies. Message &amp; data rates may apply. Text <b>HELP</b> for assistance. Reply <b>STOP</b> to opt out.
+                By checking this box, I consent to receive marketing and promotional SMS messages from <b>Milam Industries LLC</b> including offers and follow-ups. Message frequency varies. Message & data rates may apply.
+                Reply <b>STOP</b> to opt out.Text <b>HELP</b> for assistance.
               </span>
             </label>
 
