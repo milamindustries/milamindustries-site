@@ -33,10 +33,9 @@ export default function PrivacyPolicyPage() {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">3. Sharing of Information</h2>
       <p className="mb-4">
-        We do not sell, rent, or share your personal information or SMS consent with third parties or
-        affiliates. Information is shared only with trusted service providers who operate our communication
-        systems, and solely to deliver messages on our behalf. These providers are required to keep your
-        data secure and confidential.
+        No mobile information will be shared with third parties/affiliates for marketing/promotional purposes. Information sharing 
+        to subcontractors in support services, such as customer service, is permitted. All other use case categories exclude text messaging 
+        originator opt-in data and consent; this information will not be shared with any third parties.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">4. SMS Consent</h2>
