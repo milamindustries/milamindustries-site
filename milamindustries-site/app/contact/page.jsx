@@ -218,8 +218,10 @@ export default function ContactPage() {
                 required
               />
               <span>
-                By checking this box, I consent to receive transactional SMS messages from <b>Milam Industries LLC</b> related to my inquiry, including appointment confirmations, property updates, and service notifications. 
-                Message frequency varies. Message & data rates may apply. Reply <b>STOP</b> to opt out. Text <b>HELP</b> for assistance.
+                I consent to receive non-marketing text messages from Milam Industries LLC about appointment confirmations, 
+                property updates, evaluation scheduling, cash offer details, closing coordination, and service notifications. 
+                Message frequency may vary, message & data rates may apply. Text HELP for assistance, reply STOP to opt out.
+
               </span>
             </label>
 
@@ -232,8 +234,9 @@ export default function ContactPage() {
                 required
               />
               <span>
-                By checking this box, I consent to receive marketing and promotional SMS messages from <b>Milam Industries LLC</b> including offers and follow-ups. Message frequency varies. Message & data rates may apply.
-                Reply <b>STOP</b> to opt out. Text <b>HELP</b> for assistance.
+                I consent to receive marketing text messages, about special offers, discounts, and service updates, from Milam Industries LLC 
+                at the phone number provided. Message frequency may vary. Message & data rates may apply. Text HELP for assistance, reply STOP to opt out.
+
               </span>
             </label>
 
