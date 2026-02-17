@@ -9,16 +9,16 @@ const services = [
   {
     title: 'Cash Offer',
     blurb:
-      'Sell quickly for a fair, all-cash price—no repairs, showings, or agent fees.',
+      'Sell your property quickly for a competitive all-cash offer, with no required repairs or showings.',
     help:
-      'We evaluate as-is and present a clear cash number with a closing date that fits your timeline.',
+      'How we help: We evaluate properties in their current condition and provide a transparent cash offer with a flexible closing timeline.',
   },
   {
     title: 'Creative Financing',
     blurb:
-      'Flexible terms when traditional financing won’t work (subject-to, seller financing, novations, etc.).',
+      'Flexible purchase solutions when traditional financing may not be suitable (such as seller financing or structured purchase agreements).',
     help:
-      'We structure win-win terms to solve timing, credit, or repair hurdles—without bank delays.',
+      'How we help: We work with property owners to explore alternative purchase structures that address timing, property condition, or financial circumstances.',
   },
   {
     title: 'Distressed Property',
