@@ -271,7 +271,7 @@ export default function ContactPage() {
         <aside className="bg-white p-6 rounded-2xl border shadow-sm">
           <h2 className="font-semibold text-lg">Talk to a team member</h2>
           <div className="mt-3 text-sm text-gray-700 space-y-1">
-            <p><b>Phone:</b> 888-929-3632</p>
+            <p><b>Phone:</b> 678-580-4466</p>
             <p><b>Email:</b> info@milamindustries.com</p>
             <p><b>HQ Office:</b> 300 Colonial Center Pkwy Ste 100, Roswell, GA 30076</p>
           </div>
