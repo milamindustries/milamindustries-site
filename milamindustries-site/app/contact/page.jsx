@@ -292,9 +292,9 @@ export default function ContactPage() {
           <div className="mt-6 bg-gray-900 text-white p-5 rounded-xl text-center shadow-sm">
             <p className="text-base font-semibold">Prefer to speak directly?</p>
             <p className="mt-1 text-sm">
-              <a href="tel:+18889293632" className="underline hover:text-gray-300" aria-label="Call Milam Industries LLC now">📞 Call us now</a>{' '}
+              <a href="tel:+16785804466" className="underline hover:text-gray-300" aria-label="Call Milam Industries LLC now">📞 Call us now</a>{' '}
               or{' '}
-              <a href="sms:+18889293632" className="underline hover:text-gray-300" aria-label="Text Milam Industries LLC">💬 Text us</a>.
+              <a href="sms:+16785804466" className="underline hover:text-gray-300" aria-label="Text Milam Industries LLC">💬 Text us</a>.
             </p>
             <p className="mt-1 text-xs text-gray-300">
               Our team is available 7 days a week to answer your questions.
